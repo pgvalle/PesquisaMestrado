@@ -95,8 +95,7 @@
 
   \vspace{2.7cm}
   {\LARGE\bfseries
-    Mapeamento sistemático e avaliação\\
-    experimental de linguagens de programação\\
+    Avaliação de linguagens de programação\\
     reativa para aplicações embarcadas\par}
 
   \vspace{3.4cm}
@@ -194,16 +193,18 @@ biblioteca ou ferramenta;
   \item oportunidades de pesquisa.
 \end{itemize}
 
-A Listagem~1 apresenta uma proposta inicial de expressão de busca.
+A Listagem~\ref{lst:expressao-busca} apresenta uma proposta inicial de expressão de busca.
 
-\begin{lstlisting}[style=searchquery,caption={Proposta inicial de expressão de busca}]
+\begin{lstlisting}[
+  style=searchquery,
+  caption={Proposta inicial de expressão de busca},
+  label={lst:expressao-busca}
+]
 (
-  "reactive programming"
-  OR "functional reactive programming"
-  OR FRP
-  OR "synchronous reactive programming"
-  OR "structured synchronous reactive programming"
-  OR SSRP
+  "reactive programming" OR "reactive languages"
+  OR "synchronous programming" OR "synchronous languages"
+  OR "structured concurrency"
+  OR "functional reactive programming" OR FRP
 )
 AND
 (
@@ -259,12 +260,12 @@ As atividades poderão ser ajustadas conforme os resultados da revisão da liter
 Atividade                                     & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 \\ \hline
 Revisão da literatura                         & X & X & X &   &   &   &   &   &   &    &    &    \\ \hline
 Seleção das linguagens                        &   & X & X &   &   &   &   &   &   &    &    &    \\ \hline
-Definição dos casos de estudo                 &   &   & X & X &   &   &   &   &   &    &    &    \\ \hline
-Preparação dos ambientes e protótipos         &   &   &   & X & X &   &   &   &   &    &    &    \\ \hline
-Implementação dos casos elementares           &   &   &   &   & X & X & X &   &   &    &    &    \\ \hline
-Implementação do caso abrangente              &   &   &   &   &   &   & X & X & X &    &    &    \\ \hline
-Análise comparativa dos resultados            &   &   &   &   &   &   &   & X & X &  X &    &    \\ \hline
-Elaboração e submissão de artigo              &   &   &   &   &   &   &   &   & X &  X &  X &  X \\ \hline
+Definição dos casos de estudo                 & X & X & X & X &   &   &   &   &   &    &    &    \\ \hline
+Preparação dos ambientes e protótipos         &   & X & X & X & X &   &   &   &   &    &    &    \\ \hline
+Implementação dos casos elementares           &   &   & X & X & X & X & X &   &   &    &    &    \\ \hline
+Implementação do caso abrangente              &   &   &   &   & X & X & X & X & X &    &    &    \\ \hline
+Análise comparativa dos resultados            &   &   &   &   & X & X & X & X & X &  X &    &    \\ \hline
+Elaboração e submissão de artigo              &   &   &   &   &   &   &   & X & X &  X &  X &  X \\ \hline
 Elaboração da dissertação                     &   &   &   &   &   & X & X & X & X &  X &  X &    \\ \hline
 Revisão, ajustes e entrega                    &   &   &   &   &   &   &   &   &   &    &  X &  X \\ \hline
 \end{tabular}
