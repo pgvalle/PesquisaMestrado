@@ -117,11 +117,12 @@
 \section{Introdução}
 
 Aplicações interativas reagem continuamente a eventos do seu ambiente.
-Em abordagens orientadas a eventos, essas reações são tipicamente implementadas com callbacks,
+Em abordagens orientadas a eventos, essas reações são tipicamente implementadas com \textit{callbacks},
 que atualizam o estado do programa por meio de efeitos colaterais.
 À medida que a aplicação passa a tratar mais tipos de eventos,
 a proliferação de callbacks tende a fragmentar o fluxo de controle.
-Isso dificulta a compreensão, a depuração e a modularização do código~\cite{sawada2016emfrp,santanna2015ceu}.
+Por causa dessa fragmentação, o programador precisa usar variáveis para preservar o estado entre callbacks.
+Essas variáveis espalham o controle entre diferentes funções e tornam mais difícil reconstruir o fluxo da aplicação~\cite{sawada2016emfrp,santanna2015ceu}.
 Nesse contexto, linguagens reativas oferecem abstrações para representar as entradas do ambiente,
 suas mudanças ao longo do tempo e as reações decorrentes dessas mudanças~\cite{sawada2016emfrp,santanna2015ceu}.
 
@@ -132,10 +133,9 @@ Sensores fornecem valores que podem mudar ao longo do tempo,
 enquanto temporizadores e interfaces de comunicação podem produzir ocorrências discretas.
 Atualizações de estado e comandos enviados aos atuadores constituem reações a essas entradas.
 
-Este projeto propõe mapear sistematicamente linguagens de programação reativa aplicáveis a sistemas embarcados,
-e avaliá-las experimentalmente.
-O mapeamento buscará caracterizar as linguagens existentes e identificar possíveis oportunidades de pesquisa.
-A avaliação experimental comparará os benefícios e as limitações de cada abordagem no contexto de sistemas embarcados.
+Este projeto propõe mapear sistematicamente linguagens de programação reativa aplicáveis a sistemas embarcados, e avaliá-las experimentalmente.
+O mapeamento irá buscar caracterizar as linguagens existentes e identificar possíveis oportunidades de pesquisa.
+Já a avaliação experimental irá comparar os benefícios e as limitações de cada abordagem no contexto de sistemas embarcados.
 
 \section{Trabalhos relacionados}
 
