@@ -178,14 +178,13 @@ essas funções devem ser determinísticas, associativas e comutativas.
 
 \subsection{Revisão da literatura}
 
-Inicialmente, será conduzida uma revisão de literatura para selecionar trabalhos que apresentem,
+Inicialmente, uma revisão de literatura vai selecionar trabalhos que apresentem,
 utilizem ou avaliem linguagens ou bibliotecas de programação reativa para sistemas embarcados.
 Para cada trabalho selecionado, a revisão buscará extrair informações relacionadas aos seguintes aspectos:
 
 \begin{itemize}[leftmargin=2cm,itemsep=0pt,topsep=3pt]
   \item paradigma reativo;
-  \item linguagem,
-biblioteca ou ferramenta;
+  \item linguagem, biblioteca ou ferramenta;
   \item plataforma-alvo;
   \item método de avaliação;
   \item benefícios;
@@ -225,10 +224,10 @@ AND
 
 \subsection{Seleção de linguagens}
 
-A partir dos resultados da revisão, serão selecionadas linguagens representativas e semanticamente distintas.
-Uma seleção inicial poderá incluir Emfrp e Juniper como representantes de Functional Reactive Programming (FRP),
+Os resultados da revisão irão selecionar linguagens representativas e semanticamente distintas.
+Uma seleção inicial pode incluir Emfrp e Juniper como representantes de Functional Reactive Programming (FRP),
 e Céu e ForeC como representantes de abordagens síncronas imperativas.
-Porém, a escolha final considerará critérios como:
+Porém, a escolha final irá considerar critérios como:
 
 \begin{itemize}[leftmargin=2cm,itemsep=2pt,topsep=3pt]
   \item disponibilidade de implementação para uma plataforma embarcada comum,
@@ -237,16 +236,23 @@ Porém, a escolha final considerará critérios como:
   \item adequação aos casos de estudo;
 \end{itemize}
 
-\subsection{Critérios de comparação}
+\subsection{Critérios de comparação e aplicações}
 
-A princípio, a comparação será baseada na implementação de casos de estudo equivalentes nas linguagens selecionadas.
-Pretende-se iniciar com comportamentos reativos elementares e, posteriormente, desenvolver um caso de estudo mais abrangente.
-A análise partirá das implementações concretas para relacionar as diferenças observadas às abstrações e à semântica de cada linguagem.
+A comparação irá adotar casos de estudo equivalentes nas linguagens selecionadas.
+Inicialmente, a pesquisa irá avaliar comportamentos reativos elementares.
+Em seguida, irá avançar para um caso de estudo mais abrangente.
+A análise irá partir das implementações concretas,
+relacionando as diferenças observadas às abstrações e à semântica de cada linguagem.
+
+O estudo irá utilizar aplicações de código aberto para robôs de competição com diferentes níveis de complexidade.
+Diversas equipes de robótica disponibilizam os códigos em repositórios públicos no GitHub, bem como esquemas do hardware utilizado.
+Uma pesquisa preliminar indica que as equipes utilizam principalmente plataformas Arduino ou ESP32.
+Possivelmente, a pesquisa irá ter acesso ao hardware de alguns robôs de uma das equipes.
 
 \section{Cronograma}
 
-O cronograma proposto para o desenvolvimento da pesquisa é apresentado na Tabela~\ref{tab:cronograma}.
-As atividades poderão ser ajustadas conforme os resultados da revisão da literatura e o andamento dos casos de estudo.
+A Tabela~\ref{tab:cronograma} apresenta o cronograma proposto para o desenvolvimento da pesquisa.
+As atividades poderão sofrer ajustes conforme os resultados da revisão da literatura e o andamento dos casos de estudo.
 
 \begin{table}[htbp]
 \centering
