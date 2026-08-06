@@ -148,7 +148,7 @@ Sensores fornecem valores que podem mudar ao longo do tempo,
 enquanto temporizadores e interfaces de comunicação podem produzir ocorrências discretas.
 Atualizações de estado e comandos enviados aos atuadores constituem reações a essas entradas.
 
-Este projeto propõe mapear sistematicamente linguagens de programação reativa aplicáveis a sistemas embarcados, e avaliá-las experimentalmente.
+Este projeto propõe mapear sistematicamente linguagens de programação reativa aplicáveis a sistemas embarcados e avaliá-las experimentalmente.
 O mapeamento irá buscar caracterizar as linguagens existentes e identificar possíveis oportunidades de pesquisa.
 Já a avaliação experimental irá comparar os benefícios e as limitações de cada abordagem no contexto de sistemas embarcados.
 
@@ -157,7 +157,6 @@ Já a avaliação experimental irá comparar os benefícios e as limitações de
 As Listagens~\ref{lst:blink-funcional} e~\ref{lst:blink-imperativo} mostram como linguagens reativas
 podem expressar o mesmo comportamento com semânticas distintas.
 Ambas descrevem um programa que alterna o estado de um LED a cada 500 milissegundos.
-
 
 \noindent
 \begin{minipage}[t]{0.48\textwidth}
@@ -189,25 +188,20 @@ loop:
 No exemplo funcional da Listagem~\ref{lst:blink-funcional}, \texttt{clock} define um evento que ocorre a cada 500 milissegundos.
 O valor de \texttt{led} depende desse evento, e a função \texttt{toggle} alterna esse valor a cada ocorrência.
 O código define essas dependências sem descrever explicitamente a sequência de ações.
-No exemplo imperativo da Listagem~\ref{lst:blink-imperativo},
+Já no exemplo imperativo da Listagem~\ref{lst:blink-imperativo},
 o código expressa diretamente a sequência: ligar o LED, esperar 500 milissegundos, desligar o LED, esperar novamente e repetir tudo.
-Essas duas formas de expressar o mesmo comportamento fornecem uma base para comparar as linguagens.
 
-\subsection{Abordagens funcionais}
-
-Emfrp~\cite{sawada2016emfrp} e Juniper~\cite{helbling2016juniper} são linguagens que se assemelham à Listagem~\ref{lst:blink-funcional}.
-Todas representam valores que variam no tempo e suas dependências por meio de grafos direcionados.
+Emfrp~\cite{sawada2016emfrp} e Juniper~\cite{helbling2016juniper} são exemplos de linguagens reativas funcionais.
+Ambas modelam valores que variam no tempo e suas dependências por meio de grafos direcionados.
 Emfrp mantém fixos os nós e suas dependências, enquanto Juniper permite que a estrutura do grafo mude durante a execução.
 Essa diferença não afeta o pisca-LED, pois a dependência entre \texttt{clock} e \texttt{led} permanece fixa.
 Um grafo dinâmico faria diferença se a aplicação detectasse novos dispositivos com LEDs durante a execução e criasse um comportamento reativo para cada um deles.
 A estrutura fixa de Emfrp, por outro lado, permite que o compilador determine previamente a quantidade de memória necessária e aloque os dados estaticamente.
 
-\subsection{Abordagens imperativas}
-
-Céu~\cite{santanna2015ceu} e ForeC~\cite{yip2023forec} são linguagens que se assemelham à Listagem~\ref{lst:blink-imperativo}.
+Céu~\cite{santanna2015ceu} e ForeC~\cite{yip2023forec} são linguagens imperativas.
 Ambas expressam o comportamento reativo como sequências de comandos e permitem combinar várias linhas de execução concorrentes.
 Cada linha avança até alcançar um ponto de suspensão ou sincronização e pode continuar em uma reação posterior.
-A necessidade de coordenar linhas concorrentes não aparece no pisca-LED, pois o exemplo contém apenas uma linha de execução.
+Caso o exemplo contivesse dois LEDs independentes, duas linhas de execução poderiam representar seus comportamentos concorrentes.
 
 Céu chama suas linhas de execução de trilhas (\emph{trails}).
 Uma trilha usa \texttt{await} para aguardar um evento e \texttt{emit} para produzir eventos internos.
@@ -217,7 +211,7 @@ Uma composição \texttt{par/or} termina quando uma das trilhas termina e cancel
 Já uma composição \texttt{par/and} termina somente quando todas as trilhas terminam.
 
 Céu executa as trilhas de forma concorrente, mas não simultânea.
-ForeC, por sua vez, executa linhas simultaneamente em múltiplos núcleos.
+ForeC, por sua vez, executa linhas paralelamente em múltiplos núcleos.
 Em ForeC, cada linha processa uma reação até alcançar uma barreira de sincronização.
 Essa barreira delimita a reação, em vez de representar a espera por um evento específico como \texttt{await}.
 Embora as linhas compartilhem variáveis, cada uma manipula uma cópia local durante a reação.
@@ -228,7 +222,7 @@ Essas funções devem ser determinísticas, associativas e comutativas para que 
 
 \subsection{Revisão da literatura}
 
-Inicialmente, uma revisão de literatura vai selecionar trabalhos que apresentem,
+Inicialmente, uma revisão da literatura irá selecionar trabalhos que apresentem,
 utilizem ou avaliem linguagens ou bibliotecas de programação reativa para sistemas embarcados.
 Para cada trabalho selecionado, a revisão buscará extrair informações relacionadas aos seguintes aspectos:
 
@@ -274,7 +268,7 @@ AND
 
 \subsection{Seleção de linguagens}
 
-Os resultados da revisão irão selecionar linguagens representativas e semanticamente distintas.
+Os resultados da revisão irão orientar a seleção de linguagens representativas e semanticamente distintas.
 Uma seleção inicial pode incluir Emfrp e Juniper como representantes de Functional Reactive Programming (FRP),
 e Céu e ForeC como representantes de abordagens síncronas imperativas.
 Porém, a escolha final irá considerar critérios como:
@@ -283,7 +277,7 @@ Porém, a escolha final irá considerar critérios como:
   \item disponibilidade de implementação para uma plataforma embarcada comum,
   como Arduino, ESP32 ou Raspberry Pi;
   \item qualidade da documentação;
-  \item adequação aos casos de estudo;
+  \item adequação aos casos de estudo.
 \end{itemize}
 
 \subsection{Critérios de comparação e aplicações}
@@ -332,7 +326,7 @@ e a Tabela~\ref{tab:ultra-t} resume seus principais componentes.
 
 O Ultra T irá permitir uma análise concreta da leitura concorrente de sensores,
 do controle temporal e da coordenação entre modos de operação e atuadores.
-A pesquisa também irá considerar robôs mais complexos conforme encontrar projetos adequados e obtiver acesso ao código e ao hardware.
+A pesquisa também irá considerar robôs mais complexos conforme forem encontrados projetos adequados e houver acesso ao código e ao hardware.
 Esses casos poderão incluir robôs móveis, seguidores de linha, robôs de futebol ou plataformas com manipuladores.
 Eles poderão empregar encoders, unidades inerciais, câmeras, sensores de distância e servomotores,
 além de barramentos como I2C, SPI, UART ou CAN e comunicação sem fio por Wi-Fi ou Bluetooth.
@@ -348,8 +342,8 @@ As atividades poderão sofrer ajustes conforme os resultados da revisão da lite
 \centering
 \caption{Cronograma proposto para os 12 meses de desenvolvimento da pesquisa.}
 \label{tab:cronograma}
-\scriptsize
-\setlength{\tabcolsep}{2.4pt}
+\footnotesize
+\setlength{\tabcolsep}{1.8pt}
 \renewcommand{\arraystretch}{1.15}
 \begin{tabular}{|>{\raggedright\arraybackslash}p{6.6cm}|*{12}{c|}}
 \hline
