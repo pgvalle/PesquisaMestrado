@@ -22,6 +22,7 @@ cp -- "$project_dir/$source_name.tex" "$build_dir/"
 cp -- "$project_dir/refs.bib" "$build_dir/"
 mkdir -p -- "$build_dir/assets"
 cp -- "$project_dir/assets/uerj.png" "$build_dir/assets/"
+cp -- "$project_dir/assets/ultra-t.jpg" "$build_dir/assets/"
 
 cd -- "$build_dir"
 

@@ -27,12 +27,16 @@
 \usepackage{enumitem}
 \usepackage{array}
 \usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{url}
 \usepackage{listings}
 \usepackage{caption}
 \usepackage{fancyhdr}
+\usepackage{placeins}
 
 % Keep generated labels in Portuguese even when brazil.ldf is unavailable.
 \renewcommand{\tablename}{Tabela}
+\renewcommand{\figurename}{Figura}
 \renewcommand{\lstlistingname}{Listagem}
 \renewcommand{\refname}{Referências}
 
@@ -68,6 +72,17 @@
   showstringspaces=false,
   frame=none,
   xleftmargin=1.1cm
+}
+
+\lstdefinestyle{reactiveexample}{
+  basicstyle=\ttfamily\footnotesize\linespread{1}\selectfont,
+  columns=fullflexible,
+  keepspaces=true,
+  showstringspaces=false,
+  frame=single,
+  captionpos=b,
+  aboveskip=0.5em,
+  belowskip=0pt
 }
 
 \newcommand{\signatureline}[2]{%
@@ -139,40 +154,75 @@ Já a avaliação experimental irá comparar os benefícios e as limitações de
 
 \section{Trabalhos relacionados}
 
+As Listagens~\ref{lst:blink-funcional} e~\ref{lst:blink-imperativo} mostram como linguagens reativas
+podem expressar o mesmo comportamento com semânticas distintas.
+Ambas descrevem um programa que alterna o estado de um LED a cada 500 milissegundos.
+
+
+\noindent
+\begin{minipage}[t]{0.48\textwidth}
+\begin{lstlisting}[
+  style=reactiveexample,
+  caption={Pisca-LED funcional},
+  label={lst:blink-funcional}
+]
+clock = every(500 ms)
+led   = toggle(false, clock)
+
+output LED = led
+\end{lstlisting}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\textwidth}
+\begin{lstlisting}[
+  style=reactiveexample,
+  caption={Pisca-LED imperativo},
+  label={lst:blink-imperativo}
+]
+loop:
+  LED = on
+  await 500 ms
+  LED = off
+  await 500 ms
+\end{lstlisting}
+\end{minipage}
+
+No exemplo funcional da Listagem~\ref{lst:blink-funcional}, \texttt{clock} define um evento que ocorre a cada 500 milissegundos.
+O valor de \texttt{led} depende desse evento, e a função \texttt{toggle} alterna esse valor a cada ocorrência.
+O código define essas dependências sem descrever explicitamente a sequência de ações.
+No exemplo imperativo da Listagem~\ref{lst:blink-imperativo},
+o código expressa diretamente a sequência: ligar o LED, esperar 500 milissegundos, desligar o LED, esperar novamente e repetir tudo.
+Essas duas formas de expressar o mesmo comportamento fornecem uma base para comparar as linguagens.
+
 \subsection{Abordagens funcionais}
 
-Emfrp~\cite{sawada2016emfrp} e Juniper~\cite{helbling2016juniper} abordam a programação reativa para sistemas embarcados a partir do paradigma funcional.
-Em ambas, o comportamento da aplicação é organizado como um grafo direcionado.
-Emfrp utiliza um grafo estático,
-no qual os nós representam valores que variam no tempo e as arestas representam dependências entre esses valores.
-A cada iteração, os nós de entrada recebem novos valores do ambiente,
-e os nós dependentes são recalculados segundo a estrutura do grafo.
-O grafo de Juniper, por outro lado, pode ser dinâmico.
-
-Rhine~\cite{baerenz2018rhine} é uma biblioteca funcional reativa embutida em Haskell voltada à coordenação de fluxos de processamento que operam em frequências diferentes.
-Cada fluxo é associado a um relógio,
-que determina quando ele produz ou consome dados.
-O sistema de tipos verifica a compatibilidade entre esses relógios,
-reduzindo erros na comunicação entre fluxos com diferentes taxas de atualização.
+Emfrp~\cite{sawada2016emfrp} e Juniper~\cite{helbling2016juniper} são linguagens que se assemelham à Listagem~\ref{lst:blink-funcional}.
+Todas representam valores que variam no tempo e suas dependências por meio de grafos direcionados.
+Emfrp mantém fixos os nós e suas dependências, enquanto Juniper permite que a estrutura do grafo mude durante a execução.
+Essa diferença não afeta o pisca-LED, pois a dependência entre \texttt{clock} e \texttt{led} permanece fixa.
+Um grafo dinâmico faria diferença se a aplicação detectasse novos dispositivos com LEDs durante a execução e criasse um comportamento reativo para cada um deles.
+A estrutura fixa de Emfrp, por outro lado, permite que o compilador determine previamente a quantidade de memória necessária e aloque os dados estaticamente.
 
 \subsection{Abordagens imperativas}
 
-Céu~\cite{santanna2015ceu} descreve comportamento reativo de forma imperativa.
-Um programa Céu pode combinar diversas linhas de execução,
-denominadas trilhas (\emph{trails}), por meio de composições paralelas.
-Cada trilha pode suspender sua execução com a primitiva \texttt{await} até que determinado evento ocorra.
-Quando o evento ocorre, as trilhas que o aguardam retomam a execução.
-A linguagem também permite emitir eventos internos por meio do comando \texttt{emit}.
-Juntos, o \texttt{await} e o \texttt{emit} possibilitam a coordenação entre trilhas.
+Céu~\cite{santanna2015ceu} e ForeC~\cite{yip2023forec} são linguagens que se assemelham à Listagem~\ref{lst:blink-imperativo}.
+Ambas expressam o comportamento reativo como sequências de comandos e permitem combinar várias linhas de execução concorrentes.
+Cada linha avança até alcançar um ponto de suspensão ou sincronização e pode continuar em uma reação posterior.
+A necessidade de coordenar linhas concorrentes não aparece no pisca-LED, pois o exemplo contém apenas uma linha de execução.
 
-ForeC~\cite{yip2023forec} é outra linguagem reativa imperativa,
-voltada à programação síncrona de sistemas embarcados com múltiplos núcleos de processamento.
-Um programa ForeC é composto por linhas de execução concorrentes que,
-a cada reação, processam as entradas até alcançarem barreiras de sincronização.
-Cada linha manipula cópias locais das variáveis compartilhadas.
-Ao final da reação, essas cópias são reconciliadas por funções de combinação definidas pelo programador.
-Para preservar o comportamento determinístico independentemente da ordem de execução,
-essas funções devem ser determinísticas, associativas e comutativas.
+Céu chama suas linhas de execução de trilhas (\emph{trails}).
+Uma trilha usa \texttt{await} para aguardar um evento e \texttt{emit} para produzir eventos internos.
+Essas primitivas permitem que as trilhas coordenem suas sequências sem manipular explicitamente uma máquina de estados.
+Céu também permite compor trilhas concorrentemente com duas semânticas de término.
+Uma composição \texttt{par/or} termina quando uma das trilhas termina e cancela as demais.
+Já uma composição \texttt{par/and} termina somente quando todas as trilhas terminam.
+
+Céu executa as trilhas de forma concorrente, mas não simultânea.
+ForeC, por sua vez, executa linhas simultaneamente em múltiplos núcleos.
+Em ForeC, cada linha processa uma reação até alcançar uma barreira de sincronização.
+Essa barreira delimita a reação, em vez de representar a espera por um evento específico como \texttt{await}.
+Embora as linhas compartilhem variáveis, cada uma manipula uma cópia local durante a reação.
+Na barreira, funções definidas pelo programador combinam as cópias locais e calculam os próximos valores globais.
+Essas funções devem ser determinísticas, associativas e comutativas para que a ordem de execução não altere o resultado.
 
 \section{Metodologia}
 
@@ -247,7 +297,47 @@ relacionando as diferenças observadas às abstrações e à semântica de cada 
 O estudo irá utilizar aplicações de código aberto para robôs de competição com diferentes níveis de complexidade.
 Diversas equipes de robótica disponibilizam os códigos em repositórios públicos no GitHub, bem como esquemas do hardware utilizado.
 Uma pesquisa preliminar indica que as equipes utilizam principalmente plataformas Arduino ou ESP32.
-Possivelmente, a pesquisa irá ter acesso ao hardware de alguns robôs de uma das equipes.
+
+Até o momento, a pesquisa identificou o Ultra T~\cite{uerjbotz2025ultrat} como caso concreto entre os robôs da
+equipe UERJBotz~\footnote{Página da UERJBotz no GitHub: \url{https://github.com/UerjBotz}.},
+com a possibilidade de acesso ao hardware do robô.
+O projeto consiste em um robô de mini sumô que oferece modos autônomo e radiocontrolado.
+A Figura~\ref{fig:ultra-t} apresenta o desenho técnico disponibilizado pela equipe,
+e a Tabela~\ref{tab:ultra-t} resume seus principais componentes.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.72\textwidth]{assets/ultra-t.jpg}
+  \caption{Desenho técnico do robô Ultra T. Fonte: UERJBotz~\cite{uerjbotz2025ultrat}.}
+  \label{fig:ultra-t}
+\end{figure}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Características do robô Ultra T.}
+  \label{tab:ultra-t}
+  \small
+  \renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{2.8cm}|>{\raggedright\arraybackslash}X|}
+    \hline
+    Plataforma & ESP32. \\ \hline
+    Código & 720 linhas físicas no firmware principal; aproximadamente 521 sem comentários e linhas em branco. \\ \hline
+    Sensores & Quatro sensores de distância JSumo, dois frontais e dois laterais, com alcance informado de 40~cm; receptor infravermelho VS1838B. \\ \hline
+    Atuadores & Dois motores de corrente contínua controlados por pontes H DRV8833; anel com oito LEDs NeoPixel. \\ \hline
+    Comunicação & ESP-NOW no modo radiocontrolado; infravermelho para os comandos de preparação, início e parada. \\ \hline
+  \end{tabularx}
+\end{table}
+
+\FloatBarrier
+
+O Ultra T irá permitir uma análise concreta da leitura concorrente de sensores,
+do controle temporal e da coordenação entre modos de operação e atuadores.
+A pesquisa também irá considerar robôs mais complexos conforme encontrar projetos adequados e obtiver acesso ao código e ao hardware.
+Esses casos poderão incluir robôs móveis, seguidores de linha, robôs de futebol ou plataformas com manipuladores.
+Eles poderão empregar encoders, unidades inerciais, câmeras, sensores de distância e servomotores,
+além de barramentos como I2C, SPI, UART ou CAN e comunicação sem fio por Wi-Fi ou Bluetooth.
+Essa ampliação irá permitir avaliar como as linguagens organizam eventos com diferentes frequências,
+trocas de mensagens, falhas de comunicação e ações simultâneas.
 
 \section{Cronograma}
 
