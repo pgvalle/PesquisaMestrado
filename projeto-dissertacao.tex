@@ -1,0 +1,276 @@
+% !TeX program = xelatex
+\documentclass[12pt,a4paper]{article}
+
+% Compile with XeLaTeX or LuaLaTeX. Liberation Serif is the font embedded in
+% the reference PDF; TeX Gyre Termes is used as a portable fallback.
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{libertinus}
+\else
+  \usepackage{fontspec}
+  \IfFontExistsTF{Liberation Serif}
+    {\setmainfont{Liberation Serif}}
+    {\setmainfont{TeX Gyre Termes}}
+\fi
+
+% Use Brazilian Portuguese hyphenation when the module is installed.
+\IfFileExists{brazil.ldf}
+  {\usepackage[brazil]{babel}}
+  {\usepackage{babel}}
+\usepackage{geometry}
+\geometry{top=2.5cm,bottom=2.5cm,left=3cm,right=3cm}
+\usepackage{graphicx}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{caption}
+\usepackage{fancyhdr}
+
+% Keep generated labels in Portuguese even when brazil.ldf is unavailable.
+\renewcommand{\tablename}{Tabela}
+\renewcommand{\lstlistingname}{Listagem}
+\renewcommand{\refname}{Referências}
+
+\setlength{\parindent}{1.25cm}
+\setlength{\parskip}{0pt}
+\setstretch{1.03}
+% Prevent long unbreakable fragments from crossing the text boundary.
+\setlength{\emergencystretch}{2em}
+\setcounter{secnumdepth}{2}
+
+\makeatletter
+\renewcommand\section{\@startsection{section}{1}{\z@}%
+  {-2.2ex \@plus -1ex \@minus -.2ex}%
+  {1.0ex \@plus .2ex}%
+  {\normalfont\bfseries}}
+\renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
+  {-1.8ex \@plus -1ex \@minus -.2ex}%
+  {.8ex \@plus .2ex}%
+  {\normalfont\bfseries}}
+\makeatother
+
+% Page numbers are suppressed on the cover and displayed from the first
+% content page onward.
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\fancyfoot[C]{\thepage}
+
+\lstdefinestyle{searchquery}{
+  basicstyle=\ttfamily\footnotesize\linespread{1}\selectfont,
+  columns=fullflexible,
+  keepspaces=true,
+  showstringspaces=false,
+  frame=none,
+  xleftmargin=1.1cm
+}
+
+\newcommand{\signatureline}[2]{%
+  \noindent \textbf{#1:} #2\hfill Ass:\ \rule{4cm}{0.4pt}\par
+}
+
+\begin{document}
+\sloppy
+
+\begin{titlepage}
+  \thispagestyle{empty}
+  \centering
+  \begin{tabular}{@{}c@{\hspace{0.35cm}}l@{}}
+    \raisebox{-0.5\height}{\includegraphics[width=2.15cm]{assets/uerj.png}} &
+    \begin{tabular}{@{}l@{}}
+      Universidade do Estado do Rio de Janeiro\\
+      Centro de Tecnologia e Ciências\\
+      Faculdade de Engenharia\\
+      Programa de Pós-Graduação em Engenharia Eletrônica
+    \end{tabular}
+  \end{tabular}
+
+  \vspace{3.0cm}
+  {\bfseries Projeto de Dissertação\par}
+
+  \vspace{2.7cm}
+  {\LARGE\bfseries
+    Mapeamento sistemático e avaliação\\
+    experimental de linguagens de programação\\
+    reativa para aplicações embarcadas\par}
+
+  \vspace{3.4cm}
+  \raggedright
+  \signatureline{Aluno}{Pedro Gabriel do Valle Nogueira}
+
+  \vspace{1.25cm}
+  \signatureline{Orientador}{Hélio do Nascimento Cunha Neto}
+
+  \vspace{1.25cm}
+  \signatureline{Orientador}{Francisco Figueiredo Goytacaz Sant'Anna}
+
+  \vfill
+  \centering \textit{Agosto de 2026}
+\end{titlepage}
+
+\setcounter{page}{1}
+
+\section{Introdução}
+
+Aplicações interativas reagem continuamente a eventos do seu ambiente.
+Em abordagens orientadas a eventos, essas reações são tipicamente implementadas com callbacks,
+que atualizam o estado do programa por meio de efeitos colaterais.
+À medida que a aplicação passa a tratar mais tipos de eventos,
+a proliferação de callbacks tende a fragmentar o fluxo de controle.
+Isso dificulta a compreensão, a depuração e a modularização do código~\cite{sawada2016emfrp,santanna2015ceu}.
+Nesse contexto, linguagens reativas oferecem abstrações para representar as entradas do ambiente,
+suas mudanças ao longo do tempo e as reações decorrentes dessas mudanças~\cite{sawada2016emfrp,santanna2015ceu}.
+
+Sistemas embarcados constituem um domínio relevante para a aplicação da programação reativa.
+Tipicamente, esses sistemas leem sensores, mantêm estado interno para tomada de decisão,
+controlam atuadores, tratam temporizadores e comunicam-se com outros dispositivos.
+Sensores fornecem valores que podem mudar ao longo do tempo,
+enquanto temporizadores e interfaces de comunicação podem produzir ocorrências discretas.
+Atualizações de estado e comandos enviados aos atuadores constituem reações a essas entradas.
+
+Este projeto propõe mapear sistematicamente linguagens de programação reativa aplicáveis a sistemas embarcados,
+e avaliá-las experimentalmente.
+O mapeamento buscará caracterizar as linguagens existentes e identificar possíveis oportunidades de pesquisa.
+A avaliação experimental comparará os benefícios e as limitações de cada abordagem no contexto de sistemas embarcados.
+
+\section{Trabalhos relacionados}
+
+\subsection{Abordagens funcionais}
+
+Emfrp~\cite{sawada2016emfrp} e Juniper~\cite{helbling2016juniper} abordam a programação reativa para sistemas embarcados a partir do paradigma funcional.
+Em ambas, o comportamento da aplicação é organizado como um grafo direcionado.
+Emfrp utiliza um grafo estático,
+no qual os nós representam valores que variam no tempo e as arestas representam dependências entre esses valores.
+A cada iteração, os nós de entrada recebem novos valores do ambiente,
+e os nós dependentes são recalculados segundo a estrutura do grafo.
+O grafo de Juniper, por outro lado, pode ser dinâmico.
+
+Rhine~\cite{baerenz2018rhine} é uma biblioteca funcional reativa embutida em Haskell voltada à coordenação de fluxos de processamento que operam em frequências diferentes.
+Cada fluxo é associado a um relógio,
+que determina quando ele produz ou consome dados.
+O sistema de tipos verifica a compatibilidade entre esses relógios,
+reduzindo erros na comunicação entre fluxos com diferentes taxas de atualização.
+
+\subsection{Abordagens imperativas}
+
+Céu~\cite{santanna2015ceu} descreve comportamento reativo de forma imperativa.
+Um programa Céu pode combinar diversas linhas de execução,
+denominadas trilhas (\emph{trails}), por meio de composições paralelas.
+Cada trilha pode suspender sua execução com a primitiva \texttt{await} até que determinado evento ocorra.
+Quando o evento ocorre, as trilhas que o aguardam retomam a execução.
+A linguagem também permite emitir eventos internos por meio do comando \texttt{emit}.
+Juntos, o \texttt{await} e o \texttt{emit} possibilitam a coordenação entre trilhas.
+
+ForeC~\cite{yip2023forec} é outra linguagem reativa imperativa,
+voltada à programação síncrona de sistemas embarcados com múltiplos núcleos de processamento.
+Um programa ForeC é composto por linhas de execução concorrentes que,
+a cada reação, processam as entradas até alcançarem barreiras de sincronização.
+Cada linha manipula cópias locais das variáveis compartilhadas.
+Ao final da reação, essas cópias são reconciliadas por funções de combinação definidas pelo programador.
+Para preservar o comportamento determinístico independentemente da ordem de execução,
+essas funções devem ser determinísticas, associativas e comutativas.
+
+\section{Metodologia}
+
+\subsection{Revisão da literatura}
+
+Inicialmente, será conduzida uma revisão de literatura para selecionar trabalhos que apresentem,
+utilizem ou avaliem linguagens ou bibliotecas de programação reativa para sistemas embarcados.
+Para cada trabalho selecionado, a revisão buscará extrair informações relacionadas aos seguintes aspectos:
+
+\begin{itemize}[leftmargin=2cm,itemsep=0pt,topsep=3pt]
+  \item paradigma reativo;
+  \item linguagem,
+biblioteca ou ferramenta;
+  \item plataforma-alvo;
+  \item método de avaliação;
+  \item benefícios;
+  \item limitações;
+  \item oportunidades de pesquisa.
+\end{itemize}
+
+A Listagem~1 apresenta uma proposta inicial de expressão de busca.
+
+\begin{lstlisting}[style=searchquery,caption={Proposta inicial de expressão de busca}]
+(
+  "reactive programming"
+  OR "functional reactive programming"
+  OR FRP
+  OR "synchronous reactive programming"
+  OR "structured synchronous reactive programming"
+  OR SSRP
+)
+AND
+(
+  "embedded system"
+  OR "embedded systems"
+  OR "embedded device"
+  OR "embedded devices"
+  OR microcontroller
+  OR microcontrollers
+  OR "single-board computer"
+  OR "single-board computers"
+  OR Arduino
+  OR ESP32
+  OR "Raspberry Pi"
+  OR "resource-constrained"
+)
+\end{lstlisting}
+
+\subsection{Seleção de linguagens}
+
+A partir dos resultados da revisão, serão selecionadas linguagens representativas e semanticamente distintas.
+Uma seleção inicial poderá incluir Emfrp e Juniper como representantes de Functional Reactive Programming (FRP),
+e Céu e ForeC como representantes de abordagens síncronas imperativas.
+Porém, a escolha final considerará critérios como:
+
+\begin{itemize}[leftmargin=2cm,itemsep=2pt,topsep=3pt]
+  \item disponibilidade de implementação para uma plataforma embarcada comum,
+  como Arduino, ESP32 ou Raspberry Pi;
+  \item qualidade da documentação;
+  \item adequação aos casos de estudo;
+\end{itemize}
+
+\subsection{Critérios de comparação}
+
+A princípio, a comparação será baseada na implementação de casos de estudo equivalentes nas linguagens selecionadas.
+Pretende-se iniciar com comportamentos reativos elementares e, posteriormente, desenvolver um caso de estudo mais abrangente.
+A análise partirá das implementações concretas para relacionar as diferenças observadas às abstrações e à semântica de cada linguagem.
+
+\section{Cronograma}
+
+O cronograma proposto para o desenvolvimento da pesquisa é apresentado na Tabela~\ref{tab:cronograma}.
+As atividades poderão ser ajustadas conforme os resultados da revisão da literatura e o andamento dos casos de estudo.
+
+\begin{table}[htbp]
+\centering
+\caption{Cronograma proposto para os 12 meses de desenvolvimento da pesquisa.}
+\label{tab:cronograma}
+\scriptsize
+\setlength{\tabcolsep}{2.4pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{|>{\raggedright\arraybackslash}p{6.6cm}|*{12}{c|}}
+\hline
+Atividade                                     & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 \\ \hline
+Revisão da literatura                         & X & X & X &   &   &   &   &   &   &    &    &    \\ \hline
+Seleção das linguagens                        &   & X & X &   &   &   &   &   &   &    &    &    \\ \hline
+Definição dos casos de estudo                 &   &   & X & X &   &   &   &   &   &    &    &    \\ \hline
+Preparação dos ambientes e protótipos         &   &   &   & X & X &   &   &   &   &    &    &    \\ \hline
+Implementação dos casos elementares           &   &   &   &   & X & X & X &   &   &    &    &    \\ \hline
+Implementação do caso abrangente              &   &   &   &   &   &   & X & X & X &    &    &    \\ \hline
+Análise comparativa dos resultados            &   &   &   &   &   &   &   & X & X &  X &    &    \\ \hline
+Elaboração e submissão de artigo              &   &   &   &   &   &   &   &   & X &  X &  X &  X \\ \hline
+Elaboração da dissertação                     &   &   &   &   &   & X & X & X & X &  X &  X &    \\ \hline
+Revisão, ajustes e entrega                    &   &   &   &   &   &   &   &   &   &    &  X &  X \\ \hline
+\end{tabular}
+\end{table}
+
+\bibliographystyle{unsrt}
+\bibliography{refs}
+
+\end{document}
