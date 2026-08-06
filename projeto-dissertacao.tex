@@ -34,6 +34,10 @@
 \usepackage{fancyhdr}
 \usepackage{placeins}
 
+\captionsetup[figure]{font=bf}
+\captionsetup[table]{font=bf}
+\captionsetup[lstlisting]{font=bf}
+
 % Keep generated labels in Portuguese even when brazil.ldf is unavailable.
 \renewcommand{\tablename}{Tabela}
 \renewcommand{\figurename}{Figura}
@@ -70,7 +74,8 @@
   columns=fullflexible,
   keepspaces=true,
   showstringspaces=false,
-  frame=none,
+  frame=single,
+  captionpos=t,
   xleftmargin=1.1cm
 }
 
@@ -80,7 +85,7 @@
   keepspaces=true,
   showstringspaces=false,
   frame=single,
-  captionpos=b,
+  captionpos=t,
   aboveskip=0.5em,
   belowskip=0pt
 }
@@ -248,9 +253,7 @@ A Listagem~\ref{lst:expressao-busca} apresenta uma proposta inicial de expressã
   OR "synchronous programming" OR "synchronous languages"
   OR "structured concurrency"
   OR "functional reactive programming" OR FRP
-)
-AND
-(
+) AND (
   "embedded system"
   OR "embedded systems"
   OR "embedded device"
@@ -292,7 +295,7 @@ O estudo irá utilizar aplicações de código aberto para robôs de competiçã
 Diversas equipes de robótica disponibilizam os códigos em repositórios públicos no GitHub, bem como esquemas do hardware utilizado.
 Uma pesquisa preliminar indica que as equipes utilizam principalmente plataformas Arduino ou ESP32.
 
-Até o momento, a pesquisa identificou o Ultra T~\cite{uerjbotz2025ultrat} como caso concreto entre os robôs da
+Até o momento, identificamos o Ultra T~\cite{uerjbotz2025ultrat} como caso concreto entre os robôs da
 equipe UERJBotz~\footnote{Página da UERJBotz no GitHub: \url{https://github.com/UerjBotz}.},
 com a possibilidade de acesso ao hardware do robô.
 O projeto consiste em um robô de mini sumô que oferece modos autônomo e radiocontrolado.
@@ -326,7 +329,7 @@ e a Tabela~\ref{tab:ultra-t} resume seus principais componentes.
 
 O Ultra T irá permitir uma análise concreta da leitura concorrente de sensores,
 do controle temporal e da coordenação entre modos de operação e atuadores.
-A pesquisa também irá considerar robôs mais complexos conforme forem encontrados projetos adequados e houver acesso ao código e ao hardware.
+O projeto também irá considerar robôs mais complexos conforme encontrar projetos adequados e houver acesso ao código e ao hardware.
 Esses casos poderão incluir robôs móveis, seguidores de linha, robôs de futebol ou plataformas com manipuladores.
 Eles poderão empregar encoders, unidades inerciais, câmeras, sensores de distância e servomotores,
 além de barramentos como I2C, SPI, UART ou CAN e comunicação sem fio por Wi-Fi ou Bluetooth.
