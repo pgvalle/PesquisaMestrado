@@ -1,0 +1,57 @@
+WEB OF SCIENCE SEARCH STRATEGY
+==============================
+
+Database:
+Web of Science Core Collection
+
+Recommended search mode:
+Advanced Search
+
+Field scope:
+TS= (Topic)
+
+What TS= searches:
+- Title
+- Abstract
+- Author Keywords
+- Keywords Plus
+
+Important comparability note:
+-----------------------------
+Web of Science Topic search is slightly broader than Scopus TITLE-ABS-KEY because TS= also includes Keywords Plus.
+
+Search query:
+-------------
+TS=(
+    "reactive programming"
+    OR "reactive languages"
+    OR "synchronous programming"
+    OR "synchronous languages"
+    OR "structured concurrency"
+    OR "functional reactive programming"
+    OR FRP
+)
+AND
+TS=(
+    "embedded system"
+    OR "embedded systems"
+    OR "embedded device"
+    OR "embedded devices"
+    OR microcontroller
+    OR microcontrollers
+    OR "single-board computer"
+    OR "single-board computers"
+    OR Arduino
+    OR ESP32
+    OR "Raspberry Pi"
+    OR "resource-constrained"
+)
+
+Compact copy/paste version:
+---------------------------
+TS=("reactive programming" OR "reactive languages" OR "synchronous programming" OR "synchronous languages" OR "structured concurrency" OR "functional reactive programming" OR FRP) AND TS=("embedded system" OR "embedded systems" OR "embedded device" OR "embedded devices" OR microcontroller OR microcontrollers OR "single-board computer" OR "single-board computers" OR Arduino OR ESP32 OR "Raspberry Pi" OR "resource-constrained")
+
+Notes:
+------
+- TS= is the practical Web of Science equivalent of a broad topic search.
+- It is not perfectly field-equivalent to Scopus TITLE-ABS-KEY because Keywords Plus is included.

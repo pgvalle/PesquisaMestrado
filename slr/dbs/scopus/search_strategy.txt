@@ -1,0 +1,60 @@
+SCOPUS SEARCH STRATEGY
+======================
+
+Database:
+Scopus
+
+Recommended search mode:
+Advanced Search
+
+Field scope:
+TITLE-ABS-KEY
+
+What TITLE-ABS-KEY searches:
+- Document title
+- Abstract
+- Keywords
+
+Search query:
+-------------
+TITLE-ABS-KEY(
+    "reactive programming"
+    OR "reactive languages"
+    OR "synchronous programming"
+    OR "synchronous languages"
+    OR "structured concurrency"
+    OR "functional reactive programming"
+    OR FRP
+)
+AND
+TITLE-ABS-KEY(
+    "embedded system"
+    OR "embedded systems"
+    OR "embedded device"
+    OR "embedded devices"
+    OR microcontroller
+    OR microcontrollers
+    OR "single-board computer"
+    OR "single-board computers"
+    OR Arduino
+    OR ESP32
+    OR "Raspberry Pi"
+    OR "resource-constrained"
+)
+
+Compact copy/paste version:
+---------------------------
+TITLE-ABS-KEY("reactive programming" OR "reactive languages" OR "synchronous programming" OR "synchronous languages" OR "structured concurrency" OR "functional reactive programming" OR FRP) AND TITLE-ABS-KEY("embedded system" OR "embedded systems" OR "embedded device" OR "embedded devices" OR microcontroller OR microcontrollers OR "single-board computer" OR "single-board computers" OR Arduino OR ESP32 OR "Raspberry Pi" OR "resource-constrained")
+
+Additional subject-area filtering applied:
+------------------------------------------
+After running the query, the retrieved results were filtered by excluding these Scopus subject areas:
+- Materials Science
+- Physics and Astronomy
+
+This subject-area filter was part of the executed Scopus search strategy. It is not encoded in the TITLE-ABS-KEY query above. To reproduce the original result set, apply these exclusions in Scopus after running the query.
+
+Notes:
+------
+- This is the cleanest direct translation of the generic query when the goal is to search title, abstract, and keywords.
+- FRP is a broad acronym and may retrieve unrelated results. It can be retained initially and evaluated for noise during screening.
