@@ -9,6 +9,19 @@ python SLR/dbs/ieee/normalize.py
 python SLR/dbs/springer/normalize.py
 ```
 
+ACM exports are provided as BibTeX. Convert the ACM export to a spreadsheet
+with:
+
+```sh
+python slr/dbs/acm/normalize.py
+```
+
+This reads `slr/dbs/acm/results.bib` and writes `slr/dbs/acm/results.csv`.
+The ACM converter includes only fields populated for every current entry:
+source row, source ID, entry type, title, year, document type, and publisher.
+The source ID is the BibTeX citation key. Abstracts and partially populated
+fields are intentionally omitted.
+
 Each command reads that directory's `results.csv` or `results.xls` and writes
 `normalized.csv`. The source export is never modified. Web of Science `.xls` input
 requires LibreOffice.
