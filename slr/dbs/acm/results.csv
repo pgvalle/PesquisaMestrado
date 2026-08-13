@@ -1,0 +1,60 @@
+﻿source_row,source_id,entry_type,title,year,document_type,publisher
+1,10.1145/3594671.3594674,inproceedings,Implementation and Evaluation of an Interpreter for Functional Reactive Programming on Small Embedded Devices,2023,Conference paper,Association for Computing Machinery
+2,10.1145/3457784.3457795,inproceedings,Functional Reactive Programming for Embedded Systems with GPGPUs,2021,Conference paper,Association for Computing Machinery
+3,10.1145/3631991.3632000,inproceedings,Developing Distributed Systems with Multiparty Functional Reactive Programming,2023,Conference paper,Association for Computing Machinery
+4,10.1145/3618305.3623608,inproceedings,A Functional Reactive Programming Language for Wirelessly Connected Shape-Changeable Chiplet-Based Computers,2023,Conference paper,Association for Computing Machinery
+5,10.1145/2892664.2892670,inproceedings,Emfrp: a functional reactive programming language for small-scale embedded systems,2016,Conference paper,Association for Computing Machinery
+6,10.1145/2975980.2975982,inproceedings,Juniper: a functional reactive programming language for the Arduino,2016,Conference paper,Association for Computing Machinery
+7,10.1145/3623506.3623578,inproceedings,Periodic and Aperiodic Task Description Mechanisms in an FRP Language for Small-Scale Embedded Systems,2023,Conference paper,Association for Computing Machinery
+8,10.1145/3651781.3651789,inproceedings,Switching Mechanism for Update Timing of Time-Varying Values in an FRP Language for Small-Scale Embedded Systems,2024,Conference paper,Association for Computing Machinery
+9,10.1145/3563837.3568338,inproceedings,Towards Introducing Asynchronous Tasks to an FRP Language for Small-Scale Embedded Systems,2022,Conference paper,Association for Computing Machinery
+10,10.1145/2513228.2513271,inproceedings,Variable voltage scheduling with the priority-based functional reactive programming language,2013,Conference paper,Association for Computing Machinery
+11,10.1145/1596550.1596558,inproceedings,Safe functional reactive programming through dependent types,2009,Conference paper,Association for Computing Machinery
+12,10.1145/3242921.3242925,inproceedings,A Simple Context-Oriented Programming Extension to an FRP Language for Small-Scale Embedded Systems,2018,Conference paper,Association for Computing Machinery
+13,10.1145/3563837.3568342,inproceedings,Reactive Programming on the Bare Metal: A Formal Model for a Low-Level Reactive Virtual Machine,2022,Conference paper,Association for Computing Machinery
+14,10.1145/3358503.3361276,inproceedings,Towards a statically scheduled parallel execution of an FRP language for embedded systems,2019,Conference paper,Association for Computing Machinery
+15,10.1145/3079368.3079387,inproceedings,Towards Reflection in an FRP Language for Small-Scale Embedded Systems,2017,Conference paper,Association for Computing Machinery
+16,10.1145/2687233.2687249,inproceedings,Robotics reactive programming with F#/Mono,2014,Conference paper,Association for Computing Machinery
+17,10.1145/2560033,article,Building timing predictable embedded systems,2014,Article,Association for Computing Machinery
+18,10.1145/3242744.3242757,inproceedings,Rhine: FRP with type-level clocks,2018,Conference paper,Association for Computing Machinery
+19,10.1145/3583678.3596895,inproceedings,Considerations for integrating virtual threads in a Java framework: a Quarkus example in a resource-constrained environment,2023,Conference paper,Association for Computing Machinery
+20,10.1145/2038642.2038644,inproceedings,Challenges and potential solutions for complex embedded systems,2011,Conference paper,Association for Computing Machinery
+21,10.1145/1967677.1967688,inproceedings,Static analysis of synchronous programs in signal for efficient design of multi-clocked embedded systems,2011,Conference paper,Association for Computing Machinery
+22,10.1145/2443608.2443609,inproceedings,Parallelizing and optimizing compilation for synchronous languages: new directions for high-performance embedded systems,2013,Conference paper,Association for Computing Machinery
+23,10.1145/1167999.1168037,inproceedings,The reactive programming approach on top of Java/J2ME,2006,Conference paper,Association for Computing Machinery
+24,10.1145/2435227.2435235,article,Synchronous programming of device drivers for global resource control in embedded operating systems,2013,Article,Association for Computing Machinery
+25,10.1145/1967677.1967689,inproceedings,Synchronous programming of device drivers for global resource control in embedded operating systems,2011,Conference paper,Association for Computing Machinery
+26,10.1145/2248418,proceedings,"LCTES '12: Proceedings of the 13th ACM SIGPLAN/SIGBED International Conference on Languages, Compilers, Tools and Theory for Embedded Systems",2012,Proceedings,Association for Computing Machinery
+27,10.1145/3141858.3141861,inproceedings,FRP IoT modules as a Scala DSL,2017,Conference paper,Association for Computing Machinery
+28,10.1145/2024724.2024952,inproceedings,RJOP: a customized Java processor for reactive embedded systems,2011,Conference paper,Association for Computing Machinery
+29,10.1145/1289927.1289949,inproceedings,Leveraging synchronous language principles for heterogeneous modeling and design of embedded systems,2007,Conference paper,Association for Computing Machinery
+30,10.1145/3737889,article,Schedule Agnostic Semantics for Reactive Probabilistic Programming,2025,Article,Association for Computing Machinery
+31,827245.827315,inproceedings,A Comparison of OO and Reactive Based Specifications on the Design of Embedded Systems,2000,Conference paper,IEEE Computer Society
+32,10.1145/3427765.3428495,inproceedings,Programming microcontrollers through high-level abstractions,2020,Conference paper,Association for Computing Machinery
+33,10.1145/2517351.2517360,inproceedings,Safe system-level concurrency on resource-constrained nodes,2013,Conference paper,Association for Computing Machinery
+34,10.1145/3414080.3414092,inproceedings,"Hailstorm: A Statically-Typed, Purely Functional Language for IoT Applications",2020,Conference paper,Association for Computing Machinery
+35,10.1145/3576914.3587495,inproceedings,Semantics foundations of PsyC based on synchronous Logical Execution Time,2023,Conference paper,Association for Computing Machinery
+36,10.1109/DATE.2005.165,inproceedings,galsC: A Language for Event-Driven Embedded Systems,2005,Conference paper,IEEE Computer Society
+37,10.1145/2463596.2486154,inproceedings,Generating hardware specific code at different abstraction levels using Averest,2013,Conference paper,Association for Computing Machinery
+38,10.1145/3572920,article,The Sparse Synchronous Model on Real Hardware,2024,Article,Association for Computing Machinery
+39,10.1145/2093328.2093337,inproceedings,Hiphop: a synchronous reactive extension for hop,2011,Conference paper,Association for Computing Machinery
+40,10.1145/2627350,article,Sequentially Constructive Concurrency—A Conservative Extension of the Synchronous Model of Computation,2014,Article,Association for Computing Machinery
+41,1715759.1715780,inproceedings,Static data-flow analysis of synchronous programs,2009,Conference paper,IEEE Press
+42,10.1145/3610579.3611084,inproceedings,Timestamp Peripherals for Precise Real-Time Programming,2023,Conference paper,Association for Computing Machinery
+43,10.1145/2038642.2038690,inproceedings,Synchronous control of reconfiguration in fractal component-based systems: a case study,2011,Conference paper,Association for Computing Machinery
+44,10.1145/1755888.1755898,inproceedings,Contracts for modular discrete controller synthesis,2010,Conference paper,Association for Computing Machinery
+45,2555754.2555755,inproceedings,"A synchronous embedding of Antescofo, a domain-specific language for interactive mixed music",2013,Conference paper,IEEE Press
+46,10.1145/502217.502226,inproceedings,A new method for compiling schizophrenic synchronous programs,2001,Conference paper,Association for Computing Machinery
+47,2830865.2830879,inproceedings,Building a hybrid systems modeler from synchronous language principles,2015,Conference paper,IEEE Press
+48,10.1145/1023833.1023859,inproceedings,Causality analysis of synchronous programs with delayed actions,2004,Conference paper,Association for Computing Machinery
+49,2555729.2555749,inproceedings,ILPc: a novel approach for scalable timing analysis of synchronous programs,2013,Conference paper,IEEE Press
+50,10.1145/1141277.1141487,inproceedings,"A domain-specific language for task handlers generation, applying discrete controller synthesis",2006,Conference paper,Association for Computing Machinery
+51,10.1145/1480881.1480899,inproceedings,Automatic modular abstractions for linear constraints,2009,Conference paper,Association for Computing Machinery
+52,10.1145/1347375.1347382,article,Causality interfaces for actor networks,2008,Article,Association for Computing Machinery
+53,10.1145/2695664.2695819,inproceedings,Compilation of synchronous observers as code contracts,2015,Conference paper,Association for Computing Machinery
+54,10.1145/1176887.1176900,inproceedings,Polychronous mode automata,2006,Conference paper,Association for Computing Machinery
+55,10.1145/1967677.1967687,inproceedings,Divide and recycle: types and compilation for a hybrid synchronous language,2011,Conference paper,Association for Computing Machinery
+56,10.1145/1113830.1113832,article,Loops in esterel,2005,Article,Association for Computing Machinery
+57,10.1145/1480881.1480893,inproceedings,Modular code generation from synchronous block diagrams: modularity vs. code size,2009,Conference paper,Association for Computing Machinery
+58,10.1145/3127041.3131363,inproceedings,Elevate embedded real-time programming with a synchronous language,2017,Conference paper,Association for Computing Machinery
+59,10.1145/370155.370432,inproceedings,A formal approach to component based development of synchronous programs,2001,Conference paper,Association for Computing Machinery
