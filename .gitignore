@@ -1,1 +1,5 @@
 projeto-dissertacao.pdf
+
+# Generated SLR database outputs
+slr/dbs/*/normalized.csv
+slr/dbs/*/deduplicated.csv

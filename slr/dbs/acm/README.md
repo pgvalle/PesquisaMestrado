@@ -183,24 +183,3 @@ AND
 ACM's graphical Advanced Search interface can make cross-field OR
 combinations awkward because separate Search Within rows are commonly combined
 with AND.
-
-### Fallback
-
-If the field-specific construction is impractical in the interface, use the
-Anywhere field with:
-
-```text
-("reactive programming" OR "reactive languages" OR "synchronous programming" OR "synchronous languages" OR "structured concurrency" OR "functional reactive programming" OR FRP)
-AND
-("embedded system" OR "embedded systems" OR "embedded device" OR "embedded devices" OR microcontroller OR microcontrollers OR "single-board computer" OR "single-board computers" OR Arduino OR ESP32 OR "Raspberry Pi" OR "resource-constrained")
-```
-
-### Fallback limitation
-
-Anywhere is broader than a title, abstract, and keywords-only search and may
-match terms occurring elsewhere in the document or full text.
-
-### Methodological note
-
-If the fallback is used, document that ACM was searched using a broader field
-scope than Scopus `TITLE-ABS-KEY`.
