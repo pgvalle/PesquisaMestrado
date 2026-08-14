@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import csv
-import json
 import sys
 import tempfile
 import unittest
@@ -11,9 +10,8 @@ SLR_DIR = Path(__file__).resolve().parents[2]
 if str(SLR_DIR) not in sys.path:
     sys.path.insert(0, str(SLR_DIR))
 
-from scripts.deduplicate import run_deduplication
-from scripts.filter_content import run_filter
-from scripts.pipeline_lib import normalize_content_type, normalize_match_text, write_csv
+from scripts.normalize_common import normalize_database
+from scripts.pipeline_lib import make_dedup_key, normalize_content_type, normalize_match_text, write_csv
 
 
 class NormalizationTests(unittest.TestCase):
@@ -29,151 +27,48 @@ class NormalizationTests(unittest.TestCase):
             "article; proceedings paper",
         )
 
+    def test_dedup_key_requires_title_or_doi(self) -> None:
+        with self.assertRaises(AssertionError):
+            make_dedup_key("", "")
+        self.assertEqual(make_dedup_key("A title", ""), ("title", "a title"))
+        self.assertEqual(make_dedup_key("A title", "10.1000/ABC"), ("doi", "10.1000/abc"))
 
-class PipelineTests(unittest.TestCase):
-    def test_filter_then_deduplicate_keeps_separate_database_files(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="slr_pipeline_test_") as temporary:
-            root = Path(temporary)
-            config_path = root / "pipeline_config.json"
-            output_root = root / "output"
-
-            scopus_fields = ["Title", "Authors", "Document Type", "Other"]
-            scopus_rows = [
-                {
-                    "Title": "Shared <i>Title</i>",
-                    "Authors": "Smith, J.",
-                    "Document Type": "Article",
-                    "Other": "scopus winner",
-                },
-                {
-                    "Title": "A Useful Book",
-                    "Authors": "Writer A.",
-                    "Document Type": "Book",
-                    "Other": "book must survive",
-                },
-                {
-                    "Title": "Review Record",
-                    "Authors": "Reviewer R.",
-                    "Document Type": "Review",
-                    "Other": "remove",
-                },
-                {
-                    "Title": "Presentation Record",
-                    "Authors": "Presenter P.",
-                    "Document Type": "Presentation",
-                    "Other": "remove unknown label",
-                },
-            ]
-            springer_fields = ["Item Title", "Authors", "Content Type", "Other"]
-            springer_rows = [
-                {
-                    "Item Title": "shared title",
-                    "Authors": "SMITH J",
-                    "Content Type": "Conference paper",
-                    "Other": "lower-priority duplicate",
-                },
-                {
-                    "Item Title": "A Useful Chapter",
-                    "Authors": "Writer B",
-                    "Content Type": "Chapter",
-                    "Other": "chapter must survive",
-                },
-                {
-                    "Item Title": "Reference Entry",
-                    "Authors": "Editor E",
-                    "Content Type": "Reference work entry",
-                    "Other": "remove",
-                },
-                {
-                    "Item Title": "Missing Author Record",
-                    "Authors": "",
-                    "Content Type": "Article",
-                    "Other": "retain conservatively",
-                },
-            ]
-
-            write_csv(root / "scopus.csv", scopus_fields, scopus_rows)
-            write_csv(root / "springer.csv", springer_fields, springer_rows)
-            config_path.write_text(
-                json.dumps(
-                    {
-                        "version": 1,
-                        "source_priority": ["scopus", "springer"],
-                        "sources": {
-                            "scopus": {
-                                "display_name": "Scopus",
-                                "input": "scopus.csv",
-                                "output_filename": "scopus.csv",
-                                "title_column": "Title",
-                                "authors_column": "Authors",
-                                "content_type_column": "Document Type",
-                                "allowed_content_types": [
-                                    "Article",
-                                    "Conference paper",
-                                    "Book chapter",
-                                    "Book",
-                                ],
-                            },
-                            "springer": {
-                                "display_name": "Springer",
-                                "input": "springer.csv",
-                                "output_filename": "springer.csv",
-                                "title_column": "Item Title",
-                                "authors_column": "Authors",
-                                "content_type_column": "Content Type",
-                                "allowed_content_types": [
-                                    "Article",
-                                    "Conference paper",
-                                    "Chapter",
-                                    "Book",
-                                ],
-                            },
-                        },
-                    },
-                    indent=2,
-                ),
-                encoding="utf-8",
-            )
-
-            filter_summary = run_filter(config_path, output_root)
-            self.assertEqual(
-                [(item["source"], item["kept_records"], item["excluded_records"]) for item in filter_summary],
-                [("scopus", 2, 2), ("springer", 3, 1)],
-            )
-
-            dedup_summary = run_deduplication(config_path, output_root)
-            self.assertEqual(
+    def test_normalizer_applies_content_type_allowlist(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="slr_normalizer_test_") as temporary:
+            directory = Path(temporary)
+            fields = ["EID", "Title", "Authors", "Year", "DOI", "Document Type", "Link"]
+            write_csv(
+                directory / "results.csv",
+                fields,
                 [
-                    (
-                        item["source"],
-                        item["kept_records"],
-                        item["duplicates_removed"],
-                        item["records_without_complete_title_author_key"],
-                    )
-                    for item in dedup_summary
+                    {
+                        "EID": "2-s2.0-article",
+                        "Title": "An article",
+                        "Authors": "Author A",
+                        "Year": "2024",
+                        "DOI": "10.1000/article",
+                        "Document Type": "Article",
+                        "Link": "https://example.test/article",
+                    },
+                    {
+                        "EID": "2-s2.0-review",
+                        "Title": "A review",
+                        "Authors": "Author B",
+                        "Year": "2024",
+                        "DOI": "10.1000/review",
+                        "Document Type": "Review",
+                        "Link": "https://example.test/review",
+                    },
                 ],
-                [("scopus", 2, 0, 0), ("springer", 2, 1, 1)],
             )
 
-            scopus_output = self._read(output_root / "deduplicated" / "scopus.csv")
-            springer_output = self._read(output_root / "deduplicated" / "springer.csv")
-            self.assertEqual([row["Title"] for row in scopus_output], ["Shared <i>Title</i>", "A Useful Book"])
-            self.assertEqual(
-                [row["Item Title"] for row in springer_output],
-                ["A Useful Chapter", "Missing Author Record"],
-            )
-            self.assertFalse((output_root / "deduplicated" / "all_databases.csv").exists())
+            output, count = normalize_database("scopus", directory)
 
-            removed_springer = self._read(
-                output_root / "reports" / "duplicates_removed_by_source" / "springer.csv"
-            )
-            self.assertEqual(len(removed_springer), 1)
-            self.assertEqual(removed_springer[0]["Pipeline Duplicate Of Source"], "scopus")
-
-    @staticmethod
-    def _read(path: Path) -> list[dict[str, str]]:
-        with path.open("r", encoding="utf-8-sig", newline="") as handle:
-            return list(csv.DictReader(handle))
+            self.assertEqual(count, 1)
+            self.assertEqual(output.name, "normalized.csv")
+            with output.open(encoding="utf-8-sig", newline="") as handle:
+                rows = list(csv.DictReader(handle))
+            self.assertEqual([row["title"] for row in rows], ["An article"])
 
 
 if __name__ == "__main__":

@@ -18,10 +18,10 @@ from pathlib import Path
 
 CSV_COLUMNS = [
     "source_row",
-    "source_id",
     "entry_type",
     "title",
     "year",
+    "doi",
     "document_type",
     "publisher",
 ]
@@ -253,13 +253,12 @@ def _document_type(entry_type: str) -> str:
 
 def entry_to_row(entry: dict[str, str], source_row: int) -> dict[str, str]:
     entry_type = entry["entry_type"]
-    key = entry["bibtex_key"]
     return {
         "source_row": str(source_row),
-        "source_id": key,
         "entry_type": entry_type,
         "title": _field(entry, "title"),
         "year": _field(entry, "year"),
+        "doi": _field(entry, "doi"),
         "document_type": _document_type(entry_type),
         "publisher": _field(entry, "publisher"),
     }

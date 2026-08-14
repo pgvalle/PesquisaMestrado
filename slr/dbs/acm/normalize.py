@@ -7,12 +7,15 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from bib_to_csv import convert
+from scripts.normalize_common import normalize_database
 
 
 if __name__ == "__main__":
     import argparse
 
-    parser = argparse.ArgumentParser(description="Convert ACM results.bib to results.csv.")
+    parser = argparse.ArgumentParser(
+        description="Convert ACM BibTeX to results.csv and normalized.csv."
+    )
     parser.add_argument(
         "--input",
         type=Path,
@@ -28,7 +31,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
     try:
         count = convert(args.input, args.output)
+        normalized_output, normalized_count = normalize_database(
+            "acm", args.output.parent, args.output
+        )
     except ValueError as exc:
         print(f"normalize.py: error: {exc}", file=sys.stderr)
         raise SystemExit(2)
     print(f"Wrote {count} ACM records to {args.output.resolve()}")
+    print(f"Wrote {normalized_count} filtered records to {normalized_output.resolve()}")

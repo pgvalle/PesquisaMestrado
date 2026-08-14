@@ -57,8 +57,9 @@ month = mar
             with output.open(encoding="utf-8-sig", newline="") as handle:
                 rows = list(csv.DictReader(handle))
             self.assertEqual(list(rows[0]), CSV_COLUMNS)
-            self.assertEqual(rows[0]["source_id"], "10.1234/example")
+            self.assertNotIn("source_id", rows[0])
             self.assertNotIn("bibtex_key", rows[0])
+            self.assertEqual(rows[0]["doi"], "10.1234/example")
             self.assertEqual(rows[0]["document_type"], "Article")
             self.assertEqual(rows[0]["publisher"], "")
             self.assertNotIn("abstract", rows[0])

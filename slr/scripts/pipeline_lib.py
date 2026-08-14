@@ -6,7 +6,6 @@ from __future__ import annotations
 import csv
 import hashlib
 import html
-import json
 import re
 import shutil
 import subprocess
@@ -15,23 +14,10 @@ import unicodedata
 from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
 
 
 class PipelineError(RuntimeError):
     """Raised when an input or pipeline configuration is invalid."""
-
-
-@dataclass(frozen=True)
-class SourceSpec:
-    key: str
-    display_name: str
-    input_path: Path
-    output_filename: str
-    title_column: str
-    authors_column: str
-    content_type_column: str
-    allowed_content_types: tuple[str, ...]
 
 
 @dataclass
@@ -43,77 +29,7 @@ class Table:
 _TAG_RE = re.compile(r"<[^>]+>")
 _WHITESPACE_RE = re.compile(r"\s+")
 _SEMICOLON_SPACE_RE = re.compile(r"\s*;\s*")
-
-
-def default_config_path() -> Path:
-    return Path(__file__).with_name("pipeline_config.json")
-
-
-def default_output_root() -> Path:
-    return Path(__file__).resolve().parent.parent / "pipeline_output"
-
-
-def load_source_specs(config_path: Path) -> tuple[dict[str, Any], list[SourceSpec]]:
-    config_path = config_path.resolve()
-    try:
-        config = json.loads(config_path.read_text(encoding="utf-8"))
-    except FileNotFoundError as exc:
-        raise PipelineError(f"Configuration file not found: {config_path}") from exc
-    except json.JSONDecodeError as exc:
-        raise PipelineError(f"Invalid JSON in {config_path}: {exc}") from exc
-
-    if config.get("version") != 1:
-        raise PipelineError("pipeline_config.json must declare version 1")
-
-    source_data = config.get("sources")
-    priority = config.get("source_priority")
-    if not isinstance(source_data, dict) or not source_data:
-        raise PipelineError("Configuration must contain a non-empty 'sources' object")
-    if not isinstance(priority, list) or not priority:
-        raise PipelineError("Configuration must contain a non-empty 'source_priority' list")
-    if len(priority) != len(set(priority)):
-        raise PipelineError("source_priority contains duplicate source names")
-    if set(priority) != set(source_data):
-        raise PipelineError("source_priority must list every configured source exactly once")
-
-    required = {
-        "display_name",
-        "input",
-        "output_filename",
-        "title_column",
-        "authors_column",
-        "content_type_column",
-        "allowed_content_types",
-    }
-    specs: list[SourceSpec] = []
-    output_names: set[str] = set()
-
-    for key in priority:
-        raw = source_data[key]
-        missing = sorted(required - set(raw))
-        if missing:
-            raise PipelineError(f"Source {key!r} is missing configuration keys: {missing}")
-        allowed = raw["allowed_content_types"]
-        if not isinstance(allowed, list) or not allowed:
-            raise PipelineError(f"Source {key!r} must have non-empty allowed_content_types")
-        output_filename = str(raw["output_filename"])
-        if output_filename in output_names:
-            raise PipelineError(f"Duplicate output filename in configuration: {output_filename}")
-        output_names.add(output_filename)
-        specs.append(
-            SourceSpec(
-                key=key,
-                display_name=str(raw["display_name"]),
-                input_path=(config_path.parent / str(raw["input"])).resolve(),
-                output_filename=output_filename,
-                title_column=str(raw["title_column"]),
-                authors_column=str(raw["authors_column"]),
-                content_type_column=str(raw["content_type_column"]),
-                allowed_content_types=tuple(str(value) for value in allowed),
-            )
-        )
-
-    return config, specs
+_DOI_RE = re.compile(r"(?:https?://(?:dx\.)?doi\.org/)?(10\.\d{4,9}/\S+)", re.IGNORECASE)
 
 
 def _read_csv(path: Path) -> Table:
@@ -151,7 +67,7 @@ def _libreoffice_executable() -> str:
     if not executable:
         raise PipelineError(
             "Reading .xls/.xlsx files requires LibreOffice. Install LibreOffice, "
-            "or export the workbook as UTF-8 CSV and update pipeline_config.json."
+            "or export the workbook as UTF-8 CSV and update the database normalizer."
         )
     return executable
 
@@ -202,15 +118,6 @@ def read_table(path: Path) -> Table:
     raise PipelineError(f"Unsupported input format {path.suffix!r}: {path}")
 
 
-def validate_source_columns(spec: SourceSpec, table: Table) -> None:
-    required = {spec.title_column, spec.authors_column, spec.content_type_column}
-    missing = sorted(required - set(table.fieldnames))
-    if missing:
-        raise PipelineError(
-            f"{spec.display_name} input {spec.input_path} is missing required columns: {missing}"
-        )
-
-
 def write_csv(
     path: Path,
     fieldnames: Sequence[str],
@@ -235,6 +142,13 @@ def normalize_content_type(value: str) -> str:
     return _WHITESPACE_RE.sub(" ", text)
 
 
+def normalize_doi(value: str) -> str:
+    """Return a case-insensitive bare DOI for matching and output."""
+    value = (value or "").strip()
+    match = _DOI_RE.search(value)
+    return match.group(1).rstrip(".,;)").casefold() if match else value.casefold()
+
+
 def normalize_match_text(value: str) -> str:
     """Normalize a title or author string for exact deterministic matching.
 
@@ -250,12 +164,16 @@ def normalize_match_text(value: str) -> str:
     return _WHITESPACE_RE.sub(" ", text).strip()
 
 
-def make_dedup_key(title: str, authors: str) -> tuple[str, str] | None:
+def make_dedup_key(title: str, doi: str) -> tuple[str, str]:
+    """Use DOI as the primary key and title only when DOI is unavailable."""
+    normalized_doi = normalize_doi(doi)
+    if normalized_doi:
+        return "doi", normalized_doi
+
     normalized_title = normalize_match_text(title)
-    normalized_authors = normalize_match_text(authors)
-    if not normalized_title or not normalized_authors:
-        return None
-    return normalized_title, normalized_authors
+    if not normalized_title:
+        raise AssertionError("Every record must contain a title or DOI")
+    return "title", normalized_title
 
 
 def dedup_key_hash(key: tuple[str, str]) -> str:
@@ -268,9 +186,3 @@ def file_sha256(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
-
-
-def reset_directory(path: Path) -> None:
-    if path.exists():
-        shutil.rmtree(path)
-    path.mkdir(parents=True, exist_ok=True)

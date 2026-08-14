@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run content filtering followed by cross-database deduplication."""
+"""Run all database normalizers followed by global deduplication."""
 
 from __future__ import annotations
 
@@ -9,79 +9,66 @@ import platform
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
 
 if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from scripts.deduplicate import run_deduplication
-from scripts.filter_content import run_filter
-from scripts.pipeline_lib import (
-    PipelineError,
-    default_config_path,
-    default_output_root,
-    file_sha256,
-    load_source_specs,
-)
+from scripts.normalize_common import SPECS, normalize_database
+from scripts.pipeline_lib import PipelineError, file_sha256
+from scripts.strip_duplicates import SOURCE_PRIORITY, strip_duplicates
+from dbs.acm.bib_to_csv import convert as convert_acm
 
 
-def _parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description="Run the reproducible SLR filter-then-deduplicate pipeline."
-    )
-    parser.add_argument(
-        "--config",
-        type=Path,
-        default=default_config_path(),
-        help="Pipeline JSON configuration (default: scripts/pipeline_config.json)",
-    )
-    parser.add_argument(
-        "--output-root",
-        type=Path,
-        default=default_output_root(),
-        help="Pipeline output directory (default: SLR/pipeline_output)",
-    )
-    return parser.parse_args()
+def run_pipeline(dbs_dir: Path) -> dict[str, object]:
+    dbs_dir = dbs_dir.resolve()
+    normalization_summary: list[dict[str, object]] = []
+    inputs: list[dict[str, str]] = []
 
+    for database in SOURCE_PRIORITY:
+        database_dir = dbs_dir / database
+        input_path = database_dir / SPECS[database].input_filename
+        if database == "acm":
+            input_path = database_dir / "results.bib"
+            convert_acm(input_path, database_dir / "results.csv")
+        output_path, count = normalize_database(database, database_dir)
+        normalization_summary.append(
+            {
+                "database": database,
+                "records_written": count,
+                "normalized_file": str(output_path),
+            }
+        )
+        inputs.append(
+            {
+                "database": database,
+                "path": str(input_path),
+                "sha256": file_sha256(input_path),
+            }
+        )
 
-def run_pipeline(config_path: Path, output_root: Path) -> dict[str, Any]:
-    config, specs = load_source_specs(config_path)
-    filter_summary = run_filter(config_path, output_root)
-    deduplication_summary = run_deduplication(config_path, output_root)
-
+    deduplication_summary, duplicate_groups = strip_duplicates(dbs_dir)
     manifest = {
-        "pipeline_version": 1,
+        "pipeline_version": 2,
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "python_version": platform.python_version(),
-        "configuration_file": str(config_path.resolve()),
-        "source_priority": config["source_priority"],
+        "source_priority": list(SOURCE_PRIORITY),
+        "normalization": (
+            "Each database normalizer applies its configured content-type allowlist; "
+            "raw exports remain unchanged."
+        ),
         "deduplication_rule": {
-            "fields": ["title", "authors"],
-            "normalization": (
-                "HTML entities decoded; markup removed for the key only; Unicode NFKC; "
-                "Unicode case-folding; non-alphanumeric characters replaced by spaces; "
-                "whitespace collapsed"
-            ),
-            "missing_field_behavior": (
-                "Records missing a normalized title or authors value are retained and not matched"
-            ),
+            "primary_field": "doi",
+            "fallback_field": "title",
+            "same_doi_different_title": "duplicate",
+            "same_title_different_doi": "not duplicate",
+            "missing_doi_and_title": "AssertionError",
         },
-        "inputs": [
-            {
-                "source": spec.key,
-                "database": spec.display_name,
-                "path": str(spec.input_path),
-                "sha256": file_sha256(spec.input_path),
-            }
-            for spec in specs
-        ],
-        "filter_summary": filter_summary,
+        "inputs": inputs,
+        "normalization_summary": normalization_summary,
         "deduplication_summary": deduplication_summary,
+        "duplicate_groups": duplicate_groups,
     }
-
-    reports_dir = output_root.resolve() / "reports"
-    reports_dir.mkdir(parents=True, exist_ok=True)
-    manifest_path = reports_dir / "run_manifest.json"
+    manifest_path = dbs_dir / "run_manifest.json"
     manifest_path.write_text(
         json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
@@ -90,24 +77,32 @@ def run_pipeline(config_path: Path, output_root: Path) -> dict[str, Any]:
 
 
 def main() -> int:
-    args = _parse_args()
+    parser = argparse.ArgumentParser(
+        description="Normalize all configured database exports and deduplicate them."
+    )
+    parser.add_argument(
+        "--dbs-dir",
+        type=Path,
+        default=Path(__file__).resolve().parent.parent / "dbs",
+        help="Directory containing the database folders (default: slr/dbs)",
+    )
+    args = parser.parse_args()
     try:
-        manifest = run_pipeline(args.config, args.output_root)
-    except PipelineError as exc:
+        manifest = run_pipeline(args.dbs_dir)
+    except (AssertionError, PipelineError) as exc:
         print(f"run_pipeline.py: error: {exc}", file=sys.stderr)
         return 2
 
-    total_input = sum(int(item["input_records"]) for item in manifest["filter_summary"])
-    total_filtered = sum(int(item["kept_records"]) for item in manifest["filter_summary"])
+    total_normalized = sum(
+        int(item["records_written"]) for item in manifest["normalization_summary"]
+    )
     total_deduplicated = sum(
         int(item["kept_records"]) for item in manifest["deduplication_summary"]
     )
     print("SLR pipeline complete:")
-    print(f"- Input records: {total_input}")
-    print(f"- After content filtering: {total_filtered}")
-    print(f"- After title+authors deduplication: {total_deduplicated}")
-    print(f"- Separate outputs: {args.output_root.resolve() / 'deduplicated'}")
-    print(f"- Audit reports: {args.output_root.resolve() / 'reports'}")
+    print(f"- Records after database normalization/filtering: {total_normalized}")
+    print(f"- Records after DOI/title deduplication: {total_deduplicated}")
+    print(f"- Run manifest: {args.dbs_dir.resolve() / 'run_manifest.json'}")
     return 0
 
 

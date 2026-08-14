@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Remove global title-and-author duplicates from normalized database files."""
+"""Remove global DOI or title duplicates from normalized database files."""
 
 from __future__ import annotations
 
@@ -12,33 +12,26 @@ if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from scripts.normalize_common import NORMALIZED_COLUMNS, SPECS
-from scripts.pipeline_lib import PipelineError, dedup_key_hash, read_table, write_csv
+from scripts.pipeline_lib import PipelineError, dedup_key_hash, make_dedup_key, read_table, write_csv
 
 
-SOURCE_PRIORITY = ("scopus", "wos", "ieee", "springer")
+SOURCE_PRIORITY = ("scopus", "wos", "ieee", "springer", "acm")
 DUPLICATE_COLUMNS = [
     "duplicate_group_id",
     "title",
     "authors",
-    "normalized_title",
-    "normalized_authors",
+    "doi",
+    "match_basis",
     "databases_found",
     "occurrence_count",
     "kept_database",
-    "kept_source_id",
-    "source_ids",
     "source_rows",
     "year",
-    "doi",
-    "publication_title",
-    "document_type",
 ]
 
 
-def _complete_key(row: dict[str, str]) -> tuple[str, str] | None:
-    title = row.get("normalized_title", "").strip()
-    authors = row.get("normalized_authors", "").strip()
-    return (title, authors) if title and authors else None
+def _complete_key(row: dict[str, str]) -> tuple[str, str]:
+    return make_dedup_key(row.get("title", ""), row.get("doi", ""))
 
 
 def strip_duplicates(dbs_dir: Path) -> tuple[list[dict[str, object]], int]:
@@ -57,8 +50,7 @@ def strip_duplicates(dbs_dir: Path) -> tuple[list[dict[str, object]], int]:
         tables[database] = table
         for row in table.rows:
             key = _complete_key(row)
-            if key is not None:
-                groups[key].append(row)
+            groups[key].append(row)
 
     duplicate_keys = {key for key, rows in groups.items() if len(rows) > 1}
     kept_ids = {id(rows[0]) for rows in groups.values()}
@@ -70,7 +62,7 @@ def strip_duplicates(dbs_dir: Path) -> tuple[list[dict[str, object]], int]:
         removed = 0
         for row in table.rows:
             key = _complete_key(row)
-            if key is None or key not in duplicate_keys or id(row) in kept_ids:
+            if key not in duplicate_keys or id(row) in kept_ids:
                 survivors.append(row)
             else:
                 removed += 1
@@ -97,23 +89,18 @@ def strip_duplicates(dbs_dir: Path) -> tuple[list[dict[str, object]], int]:
                 "duplicate_group_id": dedup_key_hash(key),
                 "title": keeper["title"],
                 "authors": keeper["authors"],
-                "normalized_title": key[0],
-                "normalized_authors": key[1],
+                "doi": keeper["doi"],
+                "match_basis": key[0],
                 "databases_found": "; ".join(databases),
                 "occurrence_count": len(occurrences),
                 "kept_database": keeper["database"],
-                "kept_source_id": keeper["source_id"],
-                "source_ids": "; ".join(row["source_id"] for row in occurrences),
                 "source_rows": "; ".join(
                     f"{row['database']}:{row['source_row']}" for row in occurrences
                 ),
                 "year": keeper["year"],
-                "doi": keeper["doi"],
-                "publication_title": keeper["publication_title"],
-                "document_type": keeper["document_type"],
             }
         )
-    duplicate_rows.sort(key=lambda row: (str(row["normalized_title"]), str(row["normalized_authors"])))
+    duplicate_rows.sort(key=lambda row: (str(row["match_basis"]), str(row["doi"]), str(row["title"])))
     write_csv(dbs_dir / "duplicates.csv", DUPLICATE_COLUMNS, duplicate_rows)
     return summaries, len(duplicate_rows)
 
