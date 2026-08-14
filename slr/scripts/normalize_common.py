@@ -102,9 +102,9 @@ SPECS = {
         display_name="ACM Digital Library",
         input_filename="results.csv",
         columns={
-            "title": "title", "authors": None,
+            "title": "title", "authors": "authors",
             "year": "year", "doi": "doi",
-            "document_type": "document_type", "url": None,
+            "document_type": "document_type", "url": "url",
         },
         allowed_content_types=("Article", "Conference paper"),
     ),

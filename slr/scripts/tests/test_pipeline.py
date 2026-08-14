@@ -70,6 +70,46 @@ class NormalizationTests(unittest.TestCase):
                 rows = list(csv.DictReader(handle))
             self.assertEqual([row["title"] for row in rows], ["An article"])
 
+    def test_acm_normalizer_preserves_authors(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="slr_acm_normalizer_test_") as temporary:
+            directory = Path(temporary)
+            fields = [
+                "source_row",
+                "entry_type",
+                "title",
+                "authors",
+                "year",
+                "doi",
+                "document_type",
+                "publisher",
+                "url",
+            ]
+            write_csv(
+                directory / "results.csv",
+                fields,
+                [
+                    {
+                        "source_row": "1",
+                        "entry_type": "inproceedings",
+                        "title": "An ACM paper",
+                        "authors": "Doe, Jane; Smith, John",
+                        "year": "2024",
+                        "doi": "10.1000/acm",
+                        "document_type": "Conference paper",
+                        "publisher": "ACM",
+                        "url": "https://doi.org/10.1000/acm",
+                    }
+                ],
+            )
+
+            output, count = normalize_database("acm", directory)
+
+            self.assertEqual(count, 1)
+            with output.open(encoding="utf-8-sig", newline="") as handle:
+                rows = list(csv.DictReader(handle))
+            self.assertEqual(rows[0]["authors"], "Doe, Jane; Smith, John")
+            self.assertEqual(rows[0]["url"], "https://doi.org/10.1000/acm")
+
 
 if __name__ == "__main__":
     unittest.main()

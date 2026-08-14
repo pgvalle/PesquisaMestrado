@@ -35,47 +35,18 @@ fields are not database identifiers.
 | `entry_type` | Entry type (`@article`, `@inproceedings`, etc.) | Written in lowercase |
 | `document_type` | Entry type | Mapped to `Article` or `Conference paper`; `@proceedings` is excluded |
 | `title` | `title` | Written for every current entry |
+| `authors` | `author` | Author names decoded and separated with `; ` |
 | `year` | `year` | Written for every current entry |
 | `doi` | `doi` | Optional; blank when absent |
 | `publisher` | `publisher` | Written for every current entry |
 | `database` | None | Generated as `acm` in `normalized.csv` |
-| `authors` | `author` | Not exported by this converter; blank in `normalized.csv` |
-| `url` | `url` | Not exported by this converter; blank in `normalized.csv` |
+| `url` | `url` | Written when present |
 
 The filtered `normalized.csv` uses the common schema:
 
 ```text
 database, source_row, title, authors, year, doi, document_type, url
 ```
-
-ACM has no exported `authors` or `url` values in this conversion, so those
-normalized fields are blank.
-
-### Omitted BibTeX fields
-
-These source fields are intentionally not written to `results.csv`:
-
-| BibTeX input | CSV output | Reason |
-|---|---|---|
-| `abstract` | None | Omitted by design, even when present |
-| `author` | None | Not present on every entry and not used for deduplication |
-| `address` | None | Not present on every entry |
-| `articleno` | None | Not present on every entry |
-| `booktitle` | None | Publication venue, not document title; not present on every entry |
-| `isbn` | None | Not present on every entry |
-| `issn` | None | Not present on every entry |
-| `issue_date` | None | Not present on every entry |
-| `journal` | None | Publication venue, not document title; not present on every entry |
-| `keywords` | None | Not present on every entry |
-| `location` | None | Not present on every entry |
-| `month` | None | Not present on every entry |
-| `number` | None | Not present on every entry |
-| `numpages` | None | Not present on every entry |
-| `pages` | None | Not present on every entry |
-| `series` | None | Not present on every entry |
-| `url` | None | Not present on every entry |
-| `volume` | None | Not present on every entry |
-| BibTeX citation key | None | DOI is the cross-database identifier; `source_row` is provenance |
 
 To use another file or output location:
 
