@@ -33,9 +33,9 @@ python slr/scripts/strip_duplicates.py
 
 ## Normalization
 
-Each database normalizer reads its raw `results.csv` or `results.xls`, validates
-that each record has a title or DOI, applies its database-specific content-type
-allowlist, and writes the common normalized schema:
+Each database normalizer reads its raw `results.csv` or `results.xls`, applies
+its database-specific content-type allowlist, and writes the common normalized
+schema:
 
 ```text
 database, source_row, title, authors, year, doi, document_type, url
@@ -54,8 +54,6 @@ The allowlists are defined in `scripts/normalize_common.py`:
 | Springer | Article, Conference paper, Chapter, Book |
 | ACM Digital Library | Article, Conference paper |
 
-Records with neither title nor DOI raise `AssertionError` and stop the run.
-
 ## Deduplication
 
 Deduplication uses DOI precedence:
@@ -64,7 +62,6 @@ Deduplication uses DOI precedence:
 - Same DOI with different titles is a duplicate.
 - Same title with different DOIs is not a duplicate.
 - Records without a DOI use normalized title as a fallback.
-- A record without both DOI and title raises `AssertionError`.
 
 Title fallback normalization decodes HTML entities, removes markup, applies
 Unicode NFKC and case-folding, replaces punctuation and other non-alphanumeric
@@ -104,6 +101,5 @@ The tests cover:
 - Title normalization behavior.
 - Content-type normalization and allowlist filtering.
 - DOI precedence and title fallback.
-- Assertion on records missing both title and DOI.
 - Duplicate handling with same DOI/different title and same title/different DOI.
 - ACM BibTeX conversion.

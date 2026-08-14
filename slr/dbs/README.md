@@ -37,9 +37,8 @@ This writes `deduplicated.csv` inside each database directory and writes the uni
 audit file `slr/dbs/duplicates.csv`. Deduplication uses DOI precedence: records with
 the same non-empty DOI are duplicates even when titles differ; records with different
 DOIs are not duplicates even when titles match. Records without a DOI fall back to a
-normalized title comparison. Records with neither DOI nor title raise an
-`AssertionError` and stop processing. Survivor priority is Scopus, Web of Science,
-IEEE, Springer, then ACM; file order breaks ties within one database.
+normalized title comparison. Survivor priority is Scopus, Web of Science, IEEE,
+Springer, then ACM; file order breaks ties within one database.
 
 The duplicate audit reports document title, authors, DOI, matching basis, source
 database, source rows, and year. Document type metadata is intentionally omitted

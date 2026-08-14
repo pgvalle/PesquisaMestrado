@@ -48,7 +48,7 @@ def run_pipeline(dbs_dir: Path) -> dict[str, object]:
 
     deduplication_summary, duplicate_groups = strip_duplicates(dbs_dir)
     manifest = {
-        "pipeline_version": 2,
+        "pipeline_version": 3,
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "python_version": platform.python_version(),
         "source_priority": list(SOURCE_PRIORITY),
@@ -61,7 +61,6 @@ def run_pipeline(dbs_dir: Path) -> dict[str, object]:
             "fallback_field": "title",
             "same_doi_different_title": "duplicate",
             "same_title_different_doi": "not duplicate",
-            "missing_doi_and_title": "AssertionError",
         },
         "inputs": inputs,
         "normalization_summary": normalization_summary,
@@ -89,7 +88,7 @@ def main() -> int:
     args = parser.parse_args()
     try:
         manifest = run_pipeline(args.dbs_dir)
-    except (AssertionError, PipelineError) as exc:
+    except PipelineError as exc:
         print(f"run_pipeline.py: error: {exc}", file=sys.stderr)
         return 2
 

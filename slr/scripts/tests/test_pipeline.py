@@ -27,11 +27,10 @@ class NormalizationTests(unittest.TestCase):
             "article; proceedings paper",
         )
 
-    def test_dedup_key_requires_title_or_doi(self) -> None:
-        with self.assertRaises(AssertionError):
-            make_dedup_key("", "")
+    def test_dedup_key_uses_doi_then_title(self) -> None:
         self.assertEqual(make_dedup_key("A title", ""), ("title", "a title"))
         self.assertEqual(make_dedup_key("A title", "10.1000/ABC"), ("doi", "10.1000/abc"))
+        self.assertEqual(make_dedup_key("", ""), ("title", ""))
 
     def test_normalizer_applies_content_type_allowlist(self) -> None:
         with tempfile.TemporaryDirectory(prefix="slr_normalizer_test_") as temporary:

@@ -170,10 +170,7 @@ def make_dedup_key(title: str, doi: str) -> tuple[str, str]:
     if normalized_doi:
         return "doi", normalized_doi
 
-    normalized_title = normalize_match_text(title)
-    if not normalized_title:
-        raise AssertionError("Every record must contain a title or DOI")
-    return "title", normalized_title
+    return "title", normalize_match_text(title)
 
 
 def file_sha256(path: Path) -> str:

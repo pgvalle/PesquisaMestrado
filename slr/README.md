@@ -16,56 +16,61 @@ filters, export format, normalization mapping, historical inventory, and
 source-specific preprocessing notes. They are the authoritative location for
 database-level information.
 
-## Historical Snapshot
+## Scope
 
-The historical preprocessing snapshot was recorded on **2026-08-07**. Counts
-from that snapshot are audit information, not fixed expectations for future
-queries. New database exports can change all counts.
+Any work that presents, utilizes or evaluates a language, framework or library for reactive programming
+in embedded systems.
+Porém, a escolha final irá considerar critérios como:
 
-The former four-source snapshot contained 1,411 records before filtering. The
-former content-type filtering stage retained 1,375 records. The historical
-title-and-authors deduplication stage retained 1,294 records.
+\begin{itemize}[leftmargin=2cm,itemsep=2pt,topsep=3pt]
+  \item disponibilidade de implementação para uma plataforma embarcada comum,
+  como Arduino, ESP32 ou Raspberry Pi;
+  \item qualidade da documentação;
+  \item adequação aos casos de estudo definidos para o projeto de pesquisa.
+\end{itemize}
 
-ACM was not included in that historical four-source total. ACM is now handled
-separately through the converter documented in its database README.
+Fields extracted:
+\begin{itemize}[leftmargin=2cm,itemsep=0pt,topsep=3pt]
+  \item paradigma reativo;
+  \item linguagem, biblioteca ou ferramenta;
+  \item plataforma-alvo;
+  \item método de avaliação;
+  \item benefícios;
+  \item limitações;
+  \item oportunidades de pesquisa.
+\end{itemize}
 
-### Historical normalized aggregate
+## General search query
 
-This cross-database inventory grouped source labels only for reporting:
+```text
+(
+  "reactive programming" OR "reactive languages"
+  OR "synchronous programming" OR "synchronous languages"
+  OR "structured concurrency"
+  OR "functional reactive programming" OR FRP
+) AND (
+  "embedded system"
+  OR "embedded systems"
+  OR "embedded device"
+  OR "embedded devices"
+  OR microcontroller
+  OR microcontrollers
+  OR "single-board computer"
+  OR "single-board computers"
+  OR Arduino
+  OR ESP32
+  OR "Raspberry Pi"
+  OR "resource-constrained"
+)
+```
 
-| Group | Count |
-|---|---:|
-| Conference paper / Proceedings paper | 718 |
-| Article | 382 |
-| Book chapter / Chapter | 264 |
-| Conference review | 22 |
-| Article; Proceedings Paper hybrid | 7 |
-| Reference work entry | 6 |
-| Living reference work entry | 6 |
-| Book | 4 |
-| Review | 2 |
-| **Total** | **1,411** |
-
-For this historical inventory only:
-
-- Springer `Chapter` and Scopus `Book chapter` were grouped as book chapters.
-- Web of Science `Proceedings Paper`, IEEE `IEEE Conferences`, and `Conference paper` were grouped as conference papers/proceedings papers.
-- IEEE `IEEE Journals` was grouped as articles.
-- Web of Science hybrid records remained separate to prevent double-counting.
-
-## Current Deduplication Rule
+## Deduplication Rule
 
 The current pipeline uses DOI precedence:
 
-- A non-empty DOI is the primary identity.
 - Records with the same DOI are duplicates even if their titles differ.
 - Records with different DOIs are not duplicates even if their titles match.
 - Records without a DOI use normalized document title as a fallback.
-- A record without both DOI and title raises `AssertionError` and stops processing.
-- Matching-only normalized values are not written to normalized CSV files.
-
-The current rule is intentionally distinct from the historical
-title-and-authors rule used for the 2026-08-07 snapshot.
 
 ## Pipeline
 
@@ -86,16 +91,3 @@ generated at runtime rather than treated as constants in documentation.
 The implementation and test details are documented in
 [scripts/README.md](scripts/README.md). The normalized-schema and global audit
 commands are documented in [dbs/README.md](dbs/README.md).
-
-## Historical Validation
-
-The historical run validated that:
-
-- All four source, filtered, and deduplicated outputs parsed successfully.
-- Filter and duplicate audit counts matched the source-to-output differences.
-- Books and chapters were not removed by content-type filtering.
-- The former title-and-authors key did not appear more than once in the historical deduplicated outputs.
-
-These checks describe the historical run. The current tests use synthetic
-fixtures to verify behavior independently of live database result counts,
-including DOI precedence, title fallback, and the missing-identity assertion.

@@ -138,10 +138,6 @@ def normalize_database(
         row["database"] = spec.key
         row["source_row"] = str(source_row)
         row["doi"] = normalize_doi(row["doi"])
-        if not row["title"].strip() and not row["doi"]:
-            raise AssertionError(
-                f"{spec.display_name} row {source_row} must contain a title or DOI"
-            )
         if normalize_content_type(row["document_type"]) not in allowed:
             continue
         rows.append(row)
