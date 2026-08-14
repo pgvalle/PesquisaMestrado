@@ -176,10 +176,6 @@ def make_dedup_key(title: str, doi: str) -> tuple[str, str]:
     return "title", normalized_title
 
 
-def dedup_key_hash(key: tuple[str, str]) -> str:
-    return hashlib.sha256((key[0] + "\x1f" + key[1]).encode("utf-8")).hexdigest()
-
-
 def file_sha256(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:

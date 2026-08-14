@@ -59,6 +59,7 @@ class NormalizedDeduplicationTests(unittest.TestCase):
             self.assertEqual(len(self._read(dbs / "scopus" / "deduplicated.csv")), 2)
             self.assertEqual(len(self._read(dbs / "wos" / "deduplicated.csv")), 1)
             duplicate = self._read(dbs / "duplicates.csv")[0]
+            self.assertNotIn("duplicate_group_id", duplicate)
             self.assertEqual(duplicate["databases_found"], "scopus; wos")
             self.assertEqual(duplicate["kept_database"], "scopus")
             self.assertEqual(duplicate["occurrence_count"], "2")

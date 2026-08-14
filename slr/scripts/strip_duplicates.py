@@ -12,12 +12,11 @@ if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from scripts.normalize_common import NORMALIZED_COLUMNS, SPECS
-from scripts.pipeline_lib import PipelineError, dedup_key_hash, make_dedup_key, read_table, write_csv
+from scripts.pipeline_lib import PipelineError, make_dedup_key, read_table, write_csv
 
 
 SOURCE_PRIORITY = ("scopus", "wos", "ieee", "springer", "acm")
 DUPLICATE_COLUMNS = [
-    "duplicate_group_id",
     "title",
     "authors",
     "doi",
@@ -86,7 +85,6 @@ def strip_duplicates(dbs_dir: Path) -> tuple[list[dict[str, object]], int]:
         databases = list(dict.fromkeys(row["database"] for row in occurrences))
         duplicate_rows.append(
             {
-                "duplicate_group_id": dedup_key_hash(key),
                 "title": keeper["title"],
                 "authors": keeper["authors"],
                 "doi": keeper["doi"],
