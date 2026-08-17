@@ -18,27 +18,24 @@ database-level information.
 
 ## Scope
 
-Any work that presents, utilizes or evaluates a language, framework or library for reactive programming
-in embedded systems.
-Porém, a escolha final irá considerar critérios como:
+The review considers studies that present, use, or evaluate a reactive
+programming language, framework, or library for embedded systems. Final study
+selection also considers:
 
-\begin{itemize}[leftmargin=2cm,itemsep=2pt,topsep=3pt]
-  \item disponibilidade de implementação para uma plataforma embarcada comum,
-  como Arduino, ESP32 ou Raspberry Pi;
-  \item qualidade da documentação;
-  \item adequação aos casos de estudo definidos para o projeto de pesquisa.
-\end{itemize}
+- Availability of an implementation for a common embedded platform, such as
+  Arduino, ESP32, or Raspberry Pi.
+- Documentation quality.
+- Suitability for the case studies defined in the research project.
 
-Fields extracted:
-\begin{itemize}[leftmargin=2cm,itemsep=0pt,topsep=3pt]
-  \item paradigma reativo;
-  \item linguagem, biblioteca ou ferramenta;
-  \item plataforma-alvo;
-  \item método de avaliação;
-  \item benefícios;
-  \item limitações;
-  \item oportunidades de pesquisa.
-\end{itemize}
+For each selected study, the review extracts:
+
+- Reactive paradigm.
+- Language, library, or tool.
+- Target platform.
+- Evaluation method.
+- Reported benefits.
+- Reported limitations.
+- Research opportunities.
 
 ## General search query
 
