@@ -6,12 +6,11 @@ import tempfile
 import unittest
 from pathlib import Path
 
-PROJECT_DIR = Path(__file__).resolve().parents[3]
-ACM_DIR = PROJECT_DIR / "slr" / "dbs" / "acm"
-if str(ACM_DIR) not in sys.path:
-    sys.path.insert(0, str(ACM_DIR))
+SLR_DIR = Path(__file__).resolve().parents[2]
+if str(SLR_DIR) not in sys.path:
+    sys.path.insert(0, str(SLR_DIR))
 
-from bib_to_csv import CSV_COLUMNS, convert, entry_to_row, parse_bibtex
+from scripts.bib_to_csv import CSV_COLUMNS, convert, entry_to_row, parse_bibtex
 
 
 class BibToCsvTests(unittest.TestCase):

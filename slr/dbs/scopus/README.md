@@ -6,7 +6,7 @@ the subject-area exclusions used for this export are documented below.
 ## Files
 
 - `results.csv`: raw Scopus export; record count varies with each query export.
-- `normalize.py`: converts the raw export to the common SLR schema.
+- `../../scripts/normalize.py`: converts the raw export to the common SLR schema.
 - `normalized.csv`: normalized records used by the global deduplication stage.
 - `deduplicated.csv`: records remaining after global DOI/title deduplication.
 
@@ -15,7 +15,7 @@ the subject-area exclusions used for this export are documented below.
 Run from the repository root:
 
 ```sh
-python slr/dbs/scopus/normalize.py
+python slr/scripts/normalize.py scopus
 ```
 
 The raw export is not modified. The normalizer expects these Scopus columns:

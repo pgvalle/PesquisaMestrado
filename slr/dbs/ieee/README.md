@@ -7,7 +7,7 @@ documented below.
 ## Files
 
 - `results.csv`: raw IEEE Xplore export; record count varies with each query export.
-- `normalize.py`: converts the raw export to the common SLR schema.
+- `../../scripts/normalize.py`: converts the raw export to the common SLR schema.
 - `normalized.csv`: normalized records used by the global deduplication stage.
 - `deduplicated.csv`: records remaining after global DOI/title deduplication.
 
@@ -16,7 +16,7 @@ documented below.
 Run from the repository root:
 
 ```sh
-python slr/dbs/ieee/normalize.py
+python slr/scripts/normalize.py ieee
 ```
 
 The raw export is not modified. The normalizer expects these IEEE columns:

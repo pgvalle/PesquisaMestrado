@@ -41,7 +41,9 @@ def strip_duplicates(dbs_dir: Path) -> tuple[list[dict[str, object]], int]:
     for database in SOURCE_PRIORITY:
         path = dbs_dir / database / "normalized.csv"
         if not path.is_file():
-            raise PipelineError(f"Missing {path}; run {database}/normalize.py first")
+            raise PipelineError(
+                f"Missing {path}; run scripts/normalize.py first"
+            )
         table = read_table(path)
         missing = sorted(set(NORMALIZED_COLUMNS) - set(table.fieldnames))
         if missing:

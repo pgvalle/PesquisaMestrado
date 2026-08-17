@@ -7,7 +7,7 @@ documented below.
 ## Files
 
 - `results.xls`: raw Web of Science export; record count varies with each query export.
-- `normalize.py`: converts the workbook to the common SLR schema.
+- `../../scripts/normalize.py`: converts the workbook to the common SLR schema.
 - `normalized.csv`: normalized records used by the global deduplication stage.
 - `deduplicated.csv`: records remaining after global DOI/title deduplication.
 
@@ -16,7 +16,7 @@ documented below.
 Run from the repository root:
 
 ```sh
-python slr/dbs/wos/normalize.py
+python slr/scripts/normalize.py wos
 ```
 
 The normalizer uses the first worksheet and requires LibreOffice (`libreoffice`

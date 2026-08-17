@@ -13,15 +13,14 @@ from pathlib import Path
 if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from scripts.normalize_common import SPECS, normalize_database
+from scripts.normalize import normalize_all
+from scripts.normalize_common import SPECS
 from scripts.pipeline_lib import PipelineError, file_sha256
 from scripts.strip_duplicates import SOURCE_PRIORITY, strip_duplicates
-from dbs.acm.bib_to_csv import convert as convert_acm
 
 
 def run_pipeline(dbs_dir: Path) -> dict[str, object]:
     dbs_dir = dbs_dir.resolve()
-    normalization_summary: list[dict[str, object]] = []
     inputs: list[dict[str, str]] = []
 
     for database in SOURCE_PRIORITY:
@@ -29,15 +28,6 @@ def run_pipeline(dbs_dir: Path) -> dict[str, object]:
         input_path = database_dir / SPECS[database].input_filename
         if database == "acm":
             input_path = database_dir / "results.bib"
-            convert_acm(input_path, database_dir / "results.csv")
-        output_path, count = normalize_database(database, database_dir)
-        normalization_summary.append(
-            {
-                "database": database,
-                "records_written": count,
-                "normalized_file": str(output_path),
-            }
-        )
         inputs.append(
             {
                 "database": database,
@@ -46,6 +36,7 @@ def run_pipeline(dbs_dir: Path) -> dict[str, object]:
             }
         )
 
+    normalization_summary = normalize_all(dbs_dir, SOURCE_PRIORITY)
     deduplication_summary, duplicate_groups = strip_duplicates(dbs_dir)
     manifest = {
         "pipeline_version": 3,

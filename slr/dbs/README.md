@@ -1,20 +1,16 @@
 # Normalize and deduplicate database exports
 
-Run the normalizer in each database directory from the repository root:
+Normalize every database from the repository root with the central normalizer:
 
 ```sh
-python slr/dbs/scopus/normalize.py
-python slr/dbs/wos/normalize.py
-python slr/dbs/ieee/normalize.py
-python slr/dbs/springer/normalize.py
-python slr/dbs/acm/normalize.py
+python slr/scripts/normalize.py
 ```
 
 ACM exports are provided as BibTeX. Convert the ACM export to a spreadsheet
 with:
 
 ```sh
-python slr/dbs/acm/normalize.py
+python slr/scripts/normalize.py acm
 ```
 
 This reads `slr/dbs/acm/results.bib` and writes `slr/dbs/acm/results.csv`.

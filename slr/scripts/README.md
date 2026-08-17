@@ -1,8 +1,9 @@
 # SLR processing scripts
 
-The database-specific normalizers apply content-type filtering, and the global
-deduplicator operates on their normalized outputs. Raw database exports are
-never modified and no temporary raw-column pipeline outputs are created.
+The central normalizer applies database-specific content-type filtering, and
+the global deduplicator operates on its normalized outputs. Raw database
+exports are never modified and no temporary raw-column pipeline outputs are
+created.
 
 ## Workflow
 
@@ -12,8 +13,8 @@ Run the complete workflow from the repository root:
 python slr/scripts/run_pipeline.py
 ```
 
-This runs every database normalizer, writes each database's `normalized.csv`,
-then runs global deduplication. The workflow writes:
+This normalizes every database, writes each database's `normalized.csv`, then
+runs global deduplication. The workflow writes:
 
 - `slr/dbs/<database>/normalized.csv`: normalized records that passed the database allowlist.
 - `slr/dbs/<database>/deduplicated.csv`: records remaining after global deduplication.
@@ -23,17 +24,16 @@ then runs global deduplication. The workflow writes:
 To run individual stages:
 
 ```sh
-python slr/dbs/scopus/normalize.py
-python slr/dbs/wos/normalize.py
-python slr/dbs/ieee/normalize.py
-python slr/dbs/springer/normalize.py
-python slr/dbs/acm/normalize.py
+python slr/scripts/normalize.py
 python slr/scripts/strip_duplicates.py
 ```
 
+Pass one or more database names to normalize only those sources, for example
+`python slr/scripts/normalize.py scopus ieee`.
+
 ## Normalization
 
-Each database normalizer reads its raw `results.csv` or `results.xls`, applies
+The normalizer reads each database's raw `results.csv` or `results.xls`, applies
 its database-specific content-type allowlist, and writes the common normalized
 schema:
 

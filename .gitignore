@@ -1,5 +1,8 @@
 projeto-dissertacao.pdf
 
+# LibreOffice lock files
+.~lock.*#
+
 # Generated SLR database outputs
 slr/dbs/*/normalized.csv
 slr/dbs/*/deduplicated.csv

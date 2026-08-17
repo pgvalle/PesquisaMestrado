@@ -3,7 +3,6 @@
 
 from __future__ import annotations
 
-import argparse
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -144,16 +143,3 @@ def normalize_database(
 
     write_csv(output_path, NORMALIZED_COLUMNS, rows)
     return output_path, len(rows)
-
-
-def database_main(database: str) -> int:
-    parser = argparse.ArgumentParser(description=f"Normalize the {SPECS[database].display_name} export.")
-    parser.add_argument("--database-dir", type=Path, help="Override the directory containing results.*")
-    args = parser.parse_args()
-    try:
-        output, count = normalize_database(database, args.database_dir)
-    except PipelineError as exc:
-        print(f"normalize.py: error: {exc}", file=sys.stderr)
-        return 2
-    print(f"Wrote {count} records to {output}")
-    return 0

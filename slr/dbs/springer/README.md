@@ -9,7 +9,7 @@ below.
 
 - `results.csv`: canonical raw Springer export; record count varies with each query export.
 - `results.csv.bak`: retained pre-cleanup export from before the canonical title cleanup.
-- `normalize.py`: converts the raw export to the common SLR schema.
+- `../../scripts/normalize.py`: converts the raw export to the common SLR schema.
 - `normalized.csv`: normalized records used by the global deduplication stage.
 - `deduplicated.csv`: records remaining after global DOI/title deduplication.
 
@@ -18,7 +18,7 @@ below.
 Run from the repository root:
 
 ```sh
-python slr/dbs/springer/normalize.py
+python slr/scripts/normalize.py springer
 ```
 
 The raw export is not modified. The normalizer expects these Springer columns:

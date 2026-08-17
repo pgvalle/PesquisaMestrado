@@ -1,13 +1,13 @@
 # ACM export
 
 ACM Digital Library provides the search results as BibTeX rather than as a
-table. The ACM-specific converter is `bib_to_csv.py`.
+table. The ACM-specific converter is `slr/scripts/bib_to_csv.py`.
 
 ## Files
 
 - `results.bib`: raw ACM BibTeX export.
 - `results.csv`: spreadsheet-friendly ACM conversion.
-- `normalize.py`: converts BibTeX and writes the filtered common-schema output.
+- `../../scripts/normalize.py`: converts BibTeX and writes the filtered common-schema output.
 - `normalized.csv`: ACM records retained for global deduplication.
 - `deduplicated.csv`: ACM records remaining after global deduplication.
 
@@ -16,7 +16,7 @@ table. The ACM-specific converter is `bib_to_csv.py`.
 Run from the repository root:
 
 ```sh
-python slr/dbs/acm/normalize.py
+python slr/scripts/normalize.py acm
 ```
 
 The raw BibTeX export is not modified. The converter reads
@@ -51,7 +51,7 @@ database, source_row, title, authors, year, doi, document_type, url
 To use another file or output location:
 
 ```sh
-python slr/dbs/acm/normalize.py --input /path/to/export.bib --output /path/to/results.csv
+python slr/scripts/bib_to_csv.py /path/to/export.bib /path/to/results.csv
 ```
 
 ## Pipeline

@@ -74,15 +74,18 @@ The current pipeline uses DOI precedence:
 
 ## Pipeline
 
-Run database normalizers as described in the database READMEs. Then run the
-normalization and deduplication workflow from the repository root:
-
-Each database normalizer applies its configured content-type allowlist while
-writing `normalized.csv`. The raw exports remain unchanged.
+Run the complete normalization and deduplication workflow from the repository
+root:
 
 ```sh
 python slr/scripts/run_pipeline.py
 ```
+
+The central normalizer applies each database's configured content-type
+allowlist while writing `normalized.csv`. The raw exports remain unchanged.
+To run normalization without deduplication, use
+`python slr/scripts/normalize.py`; database-specific commands are documented in
+the corresponding database READMEs.
 
 The pipeline keeps outputs separated by database and writes run-specific counts
 and input hashes to `slr/dbs/run_manifest.json`. Counts are deliberately
