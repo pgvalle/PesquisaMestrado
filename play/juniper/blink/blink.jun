@@ -1,0 +1,20 @@
+module Blink
+open(Io)
+
+let boardLed : uint16 = 2
+
+let mut tState = Time:state
+let mut ledState = low()
+
+fun loop() = {
+    let timerSig = Time:every(100, inout tState)
+    let ledSig =
+        Signal:foldP(
+            (currentTime, lastState) =>
+                Io:toggle(lastState),
+            inout ledState, timerSig)
+    Io:digOut(boardLed, ledSig)
+}
+
+fun setup() =
+    #pinMode(boardLed, OUTPUT);#
