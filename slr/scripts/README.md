@@ -10,7 +10,7 @@ created.
 Run the complete workflow from the repository root:
 
 ```sh
-python slr/scripts/run_pipeline.py
+python slr/scripts/run.py
 ```
 
 This normalizes every database, writes each database's `normalized.csv`, then
@@ -25,7 +25,7 @@ To run individual stages:
 
 ```sh
 python slr/scripts/normalize.py
-python slr/scripts/strip_duplicates.py
+python slr/scripts/deduplicate.py
 ```
 
 Pass one or more database names to normalize only those sources, for example
@@ -38,11 +38,11 @@ its database-specific content-type allowlist, and writes the common normalized
 schema:
 
 ```text
-database, source_row, title, authors, year, doi, document_type, url
+database, source_row, title, year, doi, document_type, url
 ```
 
-The original title and author values are preserved. Matching-only normalized
-values are not written. DOI URLs are reduced to bare, case-folded DOIs.
+The original title is preserved. Matching-only normalized values are not
+written. DOI URLs are reduced to bare, case-folded DOIs.
 
 The allowlists are defined in `scripts/normalize_common.py`:
 
@@ -76,7 +76,7 @@ Scopus -> Web of Science -> IEEE Xplore -> Springer -> ACM
 ```
 
 Within one database, file order breaks ties. The duplicate audit contains the
-document title, authors, DOI, matching basis, databases found, occurrence count,
+document title, DOI, matching basis, databases found, occurrence count,
 kept database, source rows, and year. Document type is intentionally omitted.
 
 ## Requirements

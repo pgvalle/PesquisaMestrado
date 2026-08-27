@@ -18,7 +18,6 @@ from scripts.pipeline_lib import PipelineError, make_dedup_key, read_table, writ
 SOURCE_PRIORITY = ("scopus", "wos", "ieee", "springer", "acm")
 DUPLICATE_COLUMNS = [
     "title",
-    "authors",
     "doi",
     "match_basis",
     "databases_found",
@@ -51,6 +50,11 @@ def strip_duplicates(dbs_dir: Path) -> tuple[list[dict[str, object]], int]:
         tables[database] = table
         for row in table.rows:
             key = _complete_key(row)
+            if not key[1]:
+                raise PipelineError(
+                    f"Normalized file {path} contains a record without a title or DOI "
+                    f"at source row {row.get('source_row', '') or 'unknown'}"
+                )
             groups[key].append(row)
 
     duplicate_keys = {key for key, rows in groups.items() if len(rows) > 1}
@@ -88,7 +92,6 @@ def strip_duplicates(dbs_dir: Path) -> tuple[list[dict[str, object]], int]:
         duplicate_rows.append(
             {
                 "title": keeper["title"],
-                "authors": keeper["authors"],
                 "doi": keeper["doi"],
                 "match_basis": key[0],
                 "databases_found": "; ".join(databases),
@@ -117,7 +120,7 @@ def main() -> int:
     try:
         summaries, duplicate_groups = strip_duplicates(args.dbs_dir)
     except PipelineError as exc:
-        print(f"strip_duplicates.py: error: {exc}", file=sys.stderr)
+        print(f"deduplicate.py: error: {exc}", file=sys.stderr)
         return 2
     for summary in summaries:
         print(

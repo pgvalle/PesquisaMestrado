@@ -11,8 +11,8 @@ if str(SLR_DIR) not in sys.path:
     sys.path.insert(0, str(SLR_DIR))
 
 from scripts.normalize_common import NORMALIZED_COLUMNS
-from scripts.pipeline_lib import write_csv
-from scripts.strip_duplicates import SOURCE_PRIORITY, strip_duplicates
+from scripts.pipeline_lib import PipelineError, write_csv
+from slr.scripts.deduplicate import SOURCE_PRIORITY, strip_duplicates
 
 
 class NormalizedDeduplicationTests(unittest.TestCase):
@@ -22,13 +22,12 @@ class NormalizedDeduplicationTests(unittest.TestCase):
             for database in SOURCE_PRIORITY:
                 (dbs / database).mkdir()
 
-            def row(database: str, number: int, title: str, authors: str, doi: str) -> dict[str, str]:
+            def row(database: str, number: int, title: str, doi: str) -> dict[str, str]:
                 values = {column: "" for column in NORMALIZED_COLUMNS}
                 values.update(
                     database=database,
                     source_row=str(number),
                     title=title,
-                    authors=authors,
                     doi=doi,
                 )
                 return values
@@ -37,16 +36,16 @@ class NormalizedDeduplicationTests(unittest.TestCase):
                 dbs / "scopus" / "normalized.csv",
                 NORMALIZED_COLUMNS,
                 [
-                    row("scopus", 2, "Shared", "Author", "10.1000/shared"),
-                    row("scopus", 3, "No author", "", ""),
+                    row("scopus", 2, "Shared", "10.1000/shared"),
+                    row("scopus", 3, "No DOI", ""),
                 ],
             )
             write_csv(
                 dbs / "wos" / "normalized.csv",
                 NORMALIZED_COLUMNS,
                 [
-                    row("wos", 2, "Different title", "Other Author", "10.1000/shared"),
-                    row("wos", 3, "Shared", "Other Author", "10.1000/other"),
+                    row("wos", 2, "Different title", "10.1000/shared"),
+                    row("wos", 3, "Shared", "10.1000/other"),
                 ],
             )
             for database in ("ieee", "springer", "acm"):
@@ -65,6 +64,21 @@ class NormalizedDeduplicationTests(unittest.TestCase):
             self.assertEqual(duplicate["occurrence_count"], "2")
             self.assertEqual(duplicate["doi"], "10.1000/shared")
             self.assertEqual(duplicate["match_basis"], "doi")
+
+    def test_rejects_record_without_title_or_doi(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="slr_normalized_test_") as temporary:
+            dbs = Path(temporary)
+            for database in SOURCE_PRIORITY:
+                (dbs / database).mkdir()
+                rows = []
+                if database == "scopus":
+                    row = {column: "" for column in NORMALIZED_COLUMNS}
+                    row.update(database="scopus", source_row="2")
+                    rows.append(row)
+                write_csv(dbs / database / "normalized.csv", NORMALIZED_COLUMNS, rows)
+
+            with self.assertRaisesRegex(PipelineError, "without a title or DOI"):
+                strip_duplicates(dbs)
 
     @staticmethod
     def _read(path: Path) -> list[dict[str, str]]:

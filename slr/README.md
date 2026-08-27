@@ -75,7 +75,7 @@ Run the complete normalization and deduplication workflow from the repository
 root:
 
 ```sh
-python slr/scripts/run_pipeline.py
+python slr/scripts/run.py
 ```
 
 The central normalizer applies each database's configured content-type

@@ -150,7 +150,7 @@ def normalize_doi(value: str) -> str:
 
 
 def normalize_match_text(value: str) -> str:
-    """Normalize a title or author string for exact deterministic matching.
+    """Normalize a title string for exact deterministic matching.
 
     The source value is not modified. For the key only, entities and markup are
     flattened, Unicode is normalized and case-folded, punctuation becomes spaces,

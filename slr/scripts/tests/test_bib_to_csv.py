@@ -17,7 +17,6 @@ class BibToCsvTests(unittest.TestCase):
     def test_parser_handles_nested_braces_and_latex_accents(self) -> None:
         entries = parse_bibtex(
             r'''@inproceedings{example,
-                author = {B{"a}renz, Manuel and Le Mou{"e}l, Fr{\'e}d{\'e}ric},
                 title = {A {Functional} Example},
                 year = {2024},
                 booktitle = {Proceedings},
@@ -39,7 +38,6 @@ class BibToCsvTests(unittest.TestCase):
             output = root / "output.csv"
             source.write_text(
                 """@article{10.1234/example,
-author = {Doe, Jane and Smith, John},
 title = {A test article},
 year = {2020},
 journal = {Test Journal},
@@ -59,7 +57,6 @@ month = mar
             self.assertEqual(list(rows[0]), CSV_COLUMNS)
             self.assertNotIn("source_id", rows[0])
             self.assertNotIn("bibtex_key", rows[0])
-            self.assertEqual(rows[0]["authors"], "Doe, Jane; Smith, John")
             self.assertEqual(rows[0]["doi"], "10.1234/example")
             self.assertEqual(rows[0]["url"], "https://doi.org/10.1234/example")
             self.assertEqual(rows[0]["document_type"], "Article")

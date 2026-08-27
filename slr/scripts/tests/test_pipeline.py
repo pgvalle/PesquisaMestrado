@@ -35,7 +35,7 @@ class NormalizationTests(unittest.TestCase):
     def test_normalizer_applies_content_type_allowlist(self) -> None:
         with tempfile.TemporaryDirectory(prefix="slr_normalizer_test_") as temporary:
             directory = Path(temporary)
-            fields = ["EID", "Title", "Authors", "Year", "DOI", "Document Type", "Link"]
+            fields = ["EID", "Title", "Year", "DOI", "Document Type", "Link"]
             write_csv(
                 directory / "results.csv",
                 fields,
@@ -43,7 +43,6 @@ class NormalizationTests(unittest.TestCase):
                     {
                         "EID": "2-s2.0-article",
                         "Title": "An article",
-                        "Authors": "Author A",
                         "Year": "2024",
                         "DOI": "10.1000/article",
                         "Document Type": "Article",
@@ -52,7 +51,6 @@ class NormalizationTests(unittest.TestCase):
                     {
                         "EID": "2-s2.0-review",
                         "Title": "A review",
-                        "Authors": "Author B",
                         "Year": "2024",
                         "DOI": "10.1000/review",
                         "Document Type": "Review",
@@ -69,14 +67,37 @@ class NormalizationTests(unittest.TestCase):
                 rows = list(csv.DictReader(handle))
             self.assertEqual([row["title"] for row in rows], ["An article"])
 
-    def test_acm_normalizer_preserves_authors(self) -> None:
+    def test_normalizer_rejects_record_without_title_or_doi(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="slr_normalizer_test_") as temporary:
+            directory = Path(temporary)
+            fields = ["Title", "Year", "DOI", "Document Type", "Link"]
+            write_csv(
+                directory / "results.csv",
+                fields,
+                [
+                    {
+                        "Title": "   ",
+                        "Year": "2024",
+                        "DOI": "",
+                        "Document Type": "Article",
+                        "Link": "",
+                    }
+                ],
+            )
+
+            output, count = normalize_database("scopus", directory)
+
+            self.assertEqual(count, 0)
+            with output.open(encoding="utf-8-sig", newline="") as handle:
+                self.assertEqual(list(csv.DictReader(handle)), [])
+
+    def test_acm_normalizer_preserves_url(self) -> None:
         with tempfile.TemporaryDirectory(prefix="slr_acm_normalizer_test_") as temporary:
             directory = Path(temporary)
             fields = [
                 "source_row",
                 "entry_type",
                 "title",
-                "authors",
                 "year",
                 "doi",
                 "document_type",
@@ -91,7 +112,6 @@ class NormalizationTests(unittest.TestCase):
                         "source_row": "1",
                         "entry_type": "inproceedings",
                         "title": "An ACM paper",
-                        "authors": "Doe, Jane; Smith, John",
                         "year": "2024",
                         "doi": "10.1000/acm",
                         "document_type": "Conference paper",
@@ -106,7 +126,6 @@ class NormalizationTests(unittest.TestCase):
             self.assertEqual(count, 1)
             with output.open(encoding="utf-8-sig", newline="") as handle:
                 rows = list(csv.DictReader(handle))
-            self.assertEqual(rows[0]["authors"], "Doe, Jane; Smith, John")
             self.assertEqual(rows[0]["url"], "https://doi.org/10.1000/acm")
 
 

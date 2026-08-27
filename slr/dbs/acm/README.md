@@ -35,7 +35,6 @@ fields are not database identifiers.
 | `entry_type` | Entry type (`@article`, `@inproceedings`, etc.) | Written in lowercase |
 | `document_type` | Entry type | Mapped to `Article` or `Conference paper`; `@proceedings` is excluded |
 | `title` | `title` | Written for every current entry |
-| `authors` | `author` | Author names decoded and separated with `; ` |
 | `year` | `year` | Written for every current entry |
 | `doi` | `doi` | Optional; blank when absent |
 | `publisher` | `publisher` | Written for every current entry |
@@ -45,7 +44,7 @@ fields are not database identifiers.
 The filtered `normalized.csv` uses the common schema:
 
 ```text
-database, source_row, title, authors, year, doi, document_type, url
+database, source_row, title, year, doi, document_type, url
 ```
 
 To use another file or output location:
@@ -54,40 +53,14 @@ To use another file or output location:
 python slr/scripts/bib_to_csv.py /path/to/export.bib /path/to/results.csv
 ```
 
-## Pipeline
-
 ACM normalized records retain `Article` and `Conference paper` document types.
 The proceedings-volume record is excluded because it is not an individual
-paper. Run the complete configured pipeline with:
-
-```sh
-python slr/scripts/run_pipeline.py
-```
+paper.
 
 ACM participates in global deduplication at the lowest source priority, after
 Springer.
 
-## Search Strategy
-
-### Database
-
-ACM Digital Library.
-
-### Goal
-
-Approximate a title, abstract, and keywords search.
-
-### Field limitation
-
-ACM does not provide a single direct equivalent of Scopus `TITLE-ABS-KEY` in
-the same simple form. Title, Abstract, and Keyword are exposed separately.
-
-### Preferred conceptual formulation
-
-For each concept group, search Title OR Abstract OR Keyword. Then combine the
-two concept groups with AND.
-
-### Expanded query representation
+## Search query
 
 ```text
 (
@@ -169,17 +142,3 @@ AND
     )
 )
 ```
-
-### Compact representation
-
-```text
-(Title:("reactive programming" OR "reactive languages" OR "synchronous programming" OR "synchronous languages" OR "structured concurrency" OR "functional reactive programming" OR FRP) OR Abstract:("reactive programming" OR "reactive languages" OR "synchronous programming" OR "synchronous languages" OR "structured concurrency" OR "functional reactive programming" OR FRP) OR Keyword:("reactive programming" OR "reactive languages" OR "synchronous programming" OR "synchronous languages" OR "structured concurrency" OR "functional reactive programming" OR FRP))
-AND
-(Title:("embedded system" OR "embedded systems" OR "embedded device" OR "embedded devices" OR microcontroller OR microcontrollers OR "single-board computer" OR "single-board computers" OR Arduino OR ESP32 OR "Raspberry Pi" OR "resource-constrained") OR Abstract:("embedded system" OR "embedded systems" OR "embedded device" OR "embedded devices" OR microcontroller OR microcontrollers OR "single-board computer" OR "single-board computers" OR Arduino OR ESP32 OR "Raspberry Pi" OR "resource-constrained") OR Keyword:("embedded system" OR "embedded systems" OR "embedded device" OR "embedded devices" OR microcontroller OR microcontrollers OR "single-board computer" OR "single-board computers" OR Arduino OR ESP32 OR "Raspberry Pi" OR "resource-constrained"))
-```
-
-### Practical interface note
-
-ACM's graphical Advanced Search interface can make cross-field OR
-combinations awkward because separate Search Within rows are commonly combined
-with AND.

@@ -20,7 +20,6 @@ CSV_COLUMNS = [
     "source_row",
     "entry_type",
     "title",
-    "authors",
     "year",
     "doi",
     "document_type",
@@ -234,10 +233,6 @@ def _field(entry: dict[str, str], *names: str) -> str:
     return ""
 
 
-def _authors(value: str) -> str:
-    return re.sub(r"\s+and\s+", "; ", decode_tex(value), flags=re.IGNORECASE)
-
-
 def _document_type(entry_type: str) -> str:
     return {
         "article": "Article",
@@ -259,7 +254,6 @@ def entry_to_row(entry: dict[str, str], source_row: int) -> dict[str, str]:
         "source_row": str(source_row),
         "entry_type": entry_type,
         "title": _field(entry, "title"),
-        "authors": _authors(entry.get("author", "")),
         "year": _field(entry, "year"),
         "doi": _field(entry, "doi"),
         "document_type": _document_type(entry_type),

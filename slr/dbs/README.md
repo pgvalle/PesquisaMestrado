@@ -26,7 +26,7 @@ is never modified. Web of Science `.xls` input requires LibreOffice.
 Then remove duplicates globally:
 
 ```sh
-python slr/scripts/strip_duplicates.py
+python slr/scripts/deduplicate.py
 ```
 
 This writes `deduplicated.csv` inside each database directory and writes the unified
@@ -36,7 +36,7 @@ DOIs are not duplicates even when titles match. Records without a DOI fall back 
 normalized title comparison. Survivor priority is Scopus, Web of Science, IEEE,
 Springer, then ACM; file order breaks ties within one database.
 
-The duplicate audit reports document title, authors, DOI, matching basis, source
+The duplicate audit reports document title, DOI, matching basis, source
 database, source rows, and year. Document type metadata is intentionally omitted
 from this audit.
 

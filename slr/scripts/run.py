@@ -16,7 +16,7 @@ if __package__ in {None, ""}:
 from scripts.normalize import normalize_all
 from scripts.normalize_common import SPECS
 from scripts.pipeline_lib import PipelineError, file_sha256
-from scripts.strip_duplicates import SOURCE_PRIORITY, strip_duplicates
+from scripts.deduplicate import SOURCE_PRIORITY, strip_duplicates
 
 
 def run_pipeline(dbs_dir: Path) -> dict[str, object]:
@@ -80,7 +80,7 @@ def main() -> int:
     try:
         manifest = run_pipeline(args.dbs_dir)
     except PipelineError as exc:
-        print(f"run_pipeline.py: error: {exc}", file=sys.stderr)
+        print(f"run.py: error: {exc}", file=sys.stderr)
         return 2
 
     total_normalized = sum(
