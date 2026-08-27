@@ -11,10 +11,11 @@ abstract = {This paper reports the implementation of Emfrp-REPL, an interactive 
 booktitle = {Companion Proceedings of the 7th International Conference on the Art, Science, and Engineering of Programming},
 pages = {12–16},
 numpages = {5},
-keywords = {Read-Eval-Print Loop, embedded systems, functional reactive programming},
+keywords = {functional reactive programming, embedded systems, Read-Eval-Print Loop},
 location = {Tokyo, Japan},
 series = {Programming '23}
 }
+
 @inproceedings{10.1145/3457784.3457795,
 author = {Sakurai, Yoshitaka and Moriguchi, Sosuke and Watanabe, Takuo},
 title = {Functional Reactive Programming for Embedded Systems with GPGPUs},
@@ -28,7 +29,7 @@ abstract = {We propose new functionality for FRP language to support computation
 booktitle = {Proceedings of the 2021 10th International Conference on Software and Computer Applications},
 pages = {75–80},
 numpages = {6},
-keywords = {Embedded Systems, Functional Reactive Programming, GPGPUs},
+keywords = {GPGPUs, Functional Reactive Programming, Embedded Systems},
 location = {Kuala Lumpur, Malaysia},
 series = {ICSCA '21}
 }
@@ -64,7 +65,7 @@ abstract = {This work presents the concept of MorphLang, a functional reactive p
 booktitle = {Companion Proceedings of the 2023 ACM SIGPLAN International Conference on Systems, Programming, Languages, and Applications: Software for Humanity},
 pages = {61–62},
 numpages = {2},
-keywords = {embedded systems, reactive programming, shape-changeable computer},
+keywords = {shape-changeable computer, reactive programming, embedded systems},
 location = {Cascais, Portugal},
 series = {SPLASH 2023}
 }
@@ -82,7 +83,7 @@ abstract = {In this paper, we introduce a new functional reactive programming (F
 booktitle = {Companion Proceedings of the 15th International Conference on Modularity},
 pages = {36–44},
 numpages = {9},
-keywords = {Embedded Systems, Functional Reactive Programming},
+keywords = {Functional Reactive Programming, Embedded Systems},
 location = {M{\'a}laga, Spain},
 series = {MODULARITY Companion 2016}
 }
@@ -100,7 +101,7 @@ abstract = {This paper presents the design and implementation of Juniper: a func
 booktitle = {Proceedings of the 4th International Workshop on Functional Art, Music, Modelling, and Design},
 pages = {8–16},
 numpages = {9},
-keywords = {Arduino, embedded systems, functional reactive programming, microcontroller},
+keywords = {microcontroller, functional reactive programming, embedded systems, Arduino},
 location = {Nara, Japan},
 series = {FARM 2016}
 }
@@ -118,7 +119,7 @@ abstract = {This paper presents mechanisms for describing real-time tasks in fun
 booktitle = {Proceedings of the 10th ACM SIGPLAN International Workshop on Reactive and Event-Based Languages and Systems},
 pages = {43–53},
 numpages = {11},
-keywords = {aperiodic tasks, embedded systems, functional reactive programming, language design, periodic tasks},
+keywords = {periodic tasks, language design, functional reactive programming, embedded systems, aperiodic tasks},
 location = {Cascais, Portugal},
 series = {REBLS 2023}
 }
@@ -154,7 +155,7 @@ abstract = {Emfrp is a functional reactive programming language designed for sma
 booktitle = {Proceedings of the 9th ACM SIGPLAN International Workshop on Reactive and Event-Based Languages and Systems},
 pages = {1–12},
 numpages = {12},
-keywords = {asynchronous tasks, embedded systems, functional reactive programming, promise},
+keywords = {promise, functional reactive programming, embedded systems, asynchronous tasks},
 location = {Auckland, New Zealand},
 series = {REBLS 2022}
 }
@@ -172,7 +173,7 @@ abstract = {In this paper, we consider how energy consumption can be reduced in 
 booktitle = {Proceedings of the 2013 Research in Adaptive and Convergent Systems},
 pages = {440–445},
 numpages = {6},
-keywords = {embedded system, real-time},
+keywords = {real-time, embedded system},
 location = {Montreal, Quebec, Canada},
 series = {RACS '13}
 }
@@ -208,7 +209,7 @@ abstract = {This paper presents the design of a simple context-oriented programm
 booktitle = {Proceedings of the 10th ACM International Workshop on Context-Oriented Programming: Advanced Modularity for Run-Time Composition},
 pages = {23–30},
 numpages = {8},
-keywords = {Context-Oriented Programming, Embedded Systems, Functional Reactive Programming},
+keywords = {Functional Reactive Programming, Embedded Systems, Context-Oriented Programming},
 location = {Amsterdam, Netherlands},
 series = {COP '18}
 }
@@ -226,27 +227,9 @@ abstract = {Reactive programming has many applications for embedded devices in I
 booktitle = {Proceedings of the 9th ACM SIGPLAN International Workshop on Reactive and Event-Based Languages and Systems},
 pages = {50–62},
 numpages = {13},
-keywords = {Internet-of-Things, Memory Consumption, Operational Semantics, Reactive Programming},
+keywords = {Reactive Programming, Operational Semantics, Memory Consumption, Internet-of-Things},
 location = {Auckland, New Zealand},
 series = {REBLS 2022}
-}
-
-@inproceedings{10.1145/3358503.3361276,
-author = {Sakurai, Yoshitaka and Watanabe, Takuo},
-title = {Towards a statically scheduled parallel execution of an FRP language for embedded systems},
-year = {2019},
-isbn = {9781450369862},
-publisher = {Association for Computing Machinery},
-address = {New York, NY, USA},
-url = {https://doi.org/10.1145/3358503.3361276},
-doi = {10.1145/3358503.3361276},
-abstract = {This paper presents an automatic parallelization method for a pure FRP language designed for embedded systems. Recent advances in microprocessor technology make it possible to use multicore processors even in resource-constrained embedded systems. To fully utilize such processors with a pure FRP language, we propose a method for parallelizing signal graph updates. The method is based on a static scheduling algorithm because it should run with a simple RTOS or without the help of operating systems. To evaluate the proposed method, we implemented a parallelizing compiler for XFRP, a pure FRP language for embedded systems. In this paper, we describe the parallelizing method and show some preliminary evaluation results using Linux-based systems that demonstrate the effectiveness of the method.},
-booktitle = {Proceedings of the 6th ACM SIGPLAN International Workshop on Reactive and Event-Based Languages and Systems},
-pages = {11–20},
-numpages = {10},
-keywords = {Embedded Systems, Functional Reactive Programming, Parallelization, Scheduling},
-location = {Athens, Greece},
-series = {REBLS 2019}
 }
 
 @inproceedings{10.1145/3079368.3079387,
@@ -262,9 +245,27 @@ abstract = {This paper describes a reflective extension to Emfrp, a functional r
 booktitle = {Companion Proceedings of the 1st International Conference on the Art, Science, and Engineering of Programming},
 articleno = {10},
 numpages = {6},
-keywords = {Embedded Systems, Functional Reactive Programming, Reflection},
+keywords = {Reflection, Functional Reactive Programming, Embedded Systems},
 location = {Brussels, Belgium},
 series = {Programming '17}
+}
+
+@inproceedings{10.1145/3358503.3361276,
+author = {Sakurai, Yoshitaka and Watanabe, Takuo},
+title = {Towards a statically scheduled parallel execution of an FRP language for embedded systems},
+year = {2019},
+isbn = {9781450369862},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3358503.3361276},
+doi = {10.1145/3358503.3361276},
+abstract = {This paper presents an automatic parallelization method for a pure FRP language designed for embedded systems. Recent advances in microprocessor technology make it possible to use multicore processors even in resource-constrained embedded systems. To fully utilize such processors with a pure FRP language, we propose a method for parallelizing signal graph updates. The method is based on a static scheduling algorithm because it should run with a simple RTOS or without the help of operating systems. To evaluate the proposed method, we implemented a parallelizing compiler for XFRP, a pure FRP language for embedded systems. In this paper, we describe the parallelizing method and show some preliminary evaluation results using Linux-based systems that demonstrate the effectiveness of the method.},
+booktitle = {Proceedings of the 6th ACM SIGPLAN International Workshop on Reactive and Event-Based Languages and Systems},
+pages = {11–20},
+numpages = {10},
+keywords = {Scheduling, Parallelization, Functional Reactive Programming, Embedded Systems},
+location = {Athens, Greece},
+series = {REBLS 2019}
 }
 
 @inproceedings{10.1145/2687233.2687249,
@@ -280,7 +281,7 @@ abstract = {All that computing power of modern controllers has made possible the
 booktitle = {Proceedings of the 10th Central and Eastern European Software Engineering Conference in Russia},
 articleno = {16},
 numpages = {5},
-keywords = {.NET, F#, FRP, FSharp robotics, Rx, TRIK, event-driven, reactive extensions, reactive programming, robotics},
+keywords = {robotics, reactive programming, reactive extensions, event-driven, TRIK, Rx, FSharp robotics, FRP, F#, .NET},
 location = {Moscow, Russia},
 series = {CEE-SECR '14}
 }
@@ -302,7 +303,7 @@ journal = {ACM Trans. Embed. Comput. Syst.},
 month = mar,
 articleno = {82},
 numpages = {37},
-keywords = {Embedded systems, predictability, resource sharing, safety-critical systems, timing analysis}
+keywords = {timing analysis, safety-critical systems, resource sharing, predictability, Embedded systems}
 }
 
 @inproceedings{10.1145/3242744.3242757,
@@ -318,7 +319,7 @@ abstract = {Processing data at different rates is generally a hard problem in re
 booktitle = {Proceedings of the 11th ACM SIGPLAN International Symposium on Haskell},
 pages = {145–157},
 numpages = {13},
-keywords = {asynchronous programming, functional reactive programming, haskell, reactive programming},
+keywords = {reactive programming, haskell, functional reactive programming, asynchronous programming},
 location = {St. Louis, MO, USA},
 series = {Haskell 2018}
 }
@@ -354,7 +355,7 @@ abstract = {In the 20th century, an embedded system was most often thought of as
 booktitle = {Proceedings of the Ninth ACM International Conference on Embedded Software},
 pages = {1–2},
 numpages = {2},
-keywords = {embedded systems, plenum talk},
+keywords = {plenum talk, embedded systems},
 location = {Taipei, Taiwan},
 series = {EMSOFT '11}
 }
@@ -372,7 +373,7 @@ abstract = {In this paper, we propose a sound abstraction for an efficient stati
 booktitle = {Proceedings of the 2011 SIGPLAN/SIGBED Conference on Languages, Compilers and Tools for Embedded Systems},
 pages = {71–80},
 numpages = {10},
-keywords = {abstract clocks, abstraction, compilation, embedded systems, static analysis, synchronous programming},
+keywords = {synchronous programming, static analysis, embedded systems, compilation, abstraction, abstract clocks},
 location = {Chicago, IL, USA},
 series = {LCTES '11}
 }
@@ -390,7 +391,7 @@ abstract = {Synchronous data-flow programming appeared in the 80s, with Lustre a
 booktitle = {Proceedings of the 10th Workshop on Optimizations for DSP and Embedded Systems},
 pages = {1},
 numpages = {1},
-keywords = {multicore, parallelization, reactive systems},
+keywords = {reactive systems, parallelization, multicore},
 location = {Shenzhen, China},
 series = {ODES '13}
 }
@@ -408,7 +409,7 @@ abstract = {Concurrent design facilitate the programming of interactive applicat
 booktitle = {Proceedings of the 4th International Workshop on Java Technologies for Real-Time and Embedded Systems},
 pages = {227–236},
 numpages = {10},
-keywords = {J2ME, concurrent programming, embedded systems, java, multi-clock reactive systems, reactive programming approach, synchronous-asynchronous interaction},
+keywords = {synchronous-asynchronous interaction, reactive programming approach, multi-clock reactive systems, java, embedded systems, concurrent programming, J2ME},
 location = {Paris, France},
 series = {JTRES '06}
 }
@@ -430,7 +431,7 @@ journal = {ACM Trans. Embed. Comput. Syst.},
 month = mar,
 articleno = {39},
 numpages = {26},
-keywords = {Automated control, power-aware implementation, synchronous paradigm, wireless sensor networks}
+keywords = {wireless sensor networks, synchronous paradigm, power-aware implementation, Automated control}
 }
 
 @inproceedings{10.1145/1967677.1967689,
@@ -446,7 +447,7 @@ abstract = {In embedded systems, controlling a shared resource like the bus, or 
 booktitle = {Proceedings of the 2011 SIGPLAN/SIGBED Conference on Languages, Compilers and Tools for Embedded Systems},
 pages = {81–90},
 numpages = {10},
-keywords = {automated control, power-aware implementation, synchronous paradigm, wireless sensor networks},
+keywords = {wireless sensor networks, synchronous paradigm, power-aware implementation, automated control},
 location = {Chicago, IL, USA},
 series = {LCTES '11}
 }
@@ -474,7 +475,7 @@ abstract = {With Internet of Things applications growing in size and popularity,
 booktitle = {Proceedings of the 4th ACM SIGPLAN International Workshop on Reactive and Event-Based Languages and Systems},
 pages = {15–20},
 numpages = {6},
-keywords = {DSL, Functional Reactive Programming, Scala},
+keywords = {Scala, Functional Reactive Programming, DSL},
 location = {Vancouver, BC, Canada},
 series = {REBLS 2017}
 }
@@ -492,7 +493,7 @@ abstract = {This paper presents a novel, high performance and low cost execution
 booktitle = {Proceedings of the 48th Design Automation Conference},
 pages = {1038–1043},
 numpages = {6},
-keywords = {Java processor, reactive embedded systems, synchronous languages},
+keywords = {synchronous languages, reactive embedded systems, Java processor},
 location = {San Diego, California},
 series = {DAC '11}
 }
@@ -510,7 +511,7 @@ abstract = {This paper gives a semantics for discrete-event (DE) models that gen
 booktitle = {Proceedings of the 7th ACM &amp; IEEE International Conference on Embedded Software},
 pages = {114–123},
 numpages = {10},
-keywords = {composition, discrete events, hybrid systems, model-based design, operational semantics, simulation, synchronous languages},
+keywords = {synchronous languages, simulation, operational semantics, model-based design, hybrid systems, discrete events, composition},
 location = {Salzburg, Austria},
 series = {EMSOFT '07}
 }
@@ -544,7 +545,7 @@ address = {USA},
 abstract = {The growing complexity of embedded systems has claimed more abstract approaches in order to apply some kind of system-level design methodology. Java is a natural candidate for system design language, due to its well known software compatibility and object-oriented features. On the other hand, reactive synchronous languages such as RS present several advantages to model specific domain applications, like embedded reactive real time systems. This paper presents an initial comparison of Java and RS that adopts different models of computation. The comparison has been made in terms of modeling facilities, simulation capability and synthesis results, obtained from the specification of some embedded systems.},
 booktitle = {Proceedings of the 13th Symposium on Integrated Circuits and Systems Design},
 pages = {391},
-keywords = {Java, OO based specifications, embedded systems, high level synthesis, modeling facilities, object-oriented methods, reactive based specifications, reactive synchronous languages, simulation capability, software compatibility, specific domain applications, synthesis results, system-level design methodology},
+keywords = {system-level design methodology, synthesis results, specific domain applications, software compatibility, simulation capability, reactive synchronous languages, reactive based specifications, object-oriented methods, modeling facilities, high level synthesis, embedded systems, OO based specifications, Java},
 series = {SBCCI '00}
 }
 
@@ -561,7 +562,7 @@ abstract = {In this paper, we present an approach for programming microcontrolle
 booktitle = {Proceedings of the 12th ACM SIGPLAN International Workshop on Virtual Machines and Intermediate Languages},
 pages = {5–14},
 numpages = {10},
-keywords = {Functors, High-level programming, Microcontrollers, OCaml, Synchronous programming, Virtual machine},
+keywords = {Virtual machine, Synchronous programming, OCaml, Microcontrollers, High-level programming, Functors},
 location = {Virtual, USA},
 series = {VMIL 2020}
 }
@@ -596,7 +597,7 @@ abstract = {With the growing ubiquity of Internet of Things (IoT), more complex 
 booktitle = {Proceedings of the 22nd International Symposium on Principles and Practice of Declarative Programming},
 articleno = {12},
 numpages = {16},
-keywords = {IoT, compilers, embedded systems, functional programming},
+keywords = {functional programming, embedded systems, compilers, IoT},
 location = {Bologna, Italy},
 series = {PPDP '20}
 }
@@ -627,7 +628,7 @@ isbn = {0769522882},
 publisher = {IEEE Computer Society},
 address = {USA},
 url = {https://doi.org/10.1109/DATE.2005.165},
-doi = {10.1109/DATE.2005.165},
+doi = {10.1109/date.2005.165},
 abstract = {We introduce galsC, a language designed for programming event-driven embedded systems such as sensor networks. galsC implements the TinyGALS programming model. At the local level, software components are linked via synchronous method calls to form actors. At the global level, actors communicate with each other asynchronously via message passing, which separates the flow of control between actors. A complementary model called TinyGUYS is a guarded yet synchronous model designed to allow thread-safe sharing of global state between actors via parameters without explicitly passing messages. The galsC compiler extends the nesC compiler, which allows for better type checking and code generation. Having a well-structured concurrency model at the application level greatly reduces the risk of concurrency errors, such as deadlock and race conditions. The galsC language is implemented on the Berkeley motes and is compatible with the TinyOS/nesC component library. We use a multi-hop wireless sensor network as an example to illustrate the effectiveness of the language.},
 booktitle = {Proceedings of the Conference on Design, Automation and Test in Europe - Volume 2},
 pages = {1050–1055},
@@ -648,7 +649,7 @@ abstract = {In general, embedded systems can be designed at different levels of 
 booktitle = {Proceedings of the 16th International Workshop on Software and Compilers for Embedded Systems},
 pages = {90–92},
 numpages = {3},
-keywords = {ACM proceedings, Averest, abstraction levels, hardware specific code, real-time embedded systems, synchronous languages},
+keywords = {synchronous languages, real-time embedded systems, hardware specific code, abstraction levels, Averest, ACM proceedings},
 location = {St. Goar, Germany},
 series = {M-SCOPES '13}
 }
@@ -686,7 +687,7 @@ abstract = {Hop is a Scheme-based language and system to build rich multi-tier w
 booktitle = {Proceedings of the 1st ACM SIGPLAN International Workshop on Programming Language and Systems Technologies for Internet Clients},
 pages = {49–56},
 numpages = {8},
-keywords = {functional programming, javascript, reactive programming, synchronous programming, web programming},
+keywords = {web programming, synchronous programming, reactive programming, javascript, functional programming},
 location = {Portland, Oregon, USA},
 series = {PLASTIC '11}
 }
@@ -708,7 +709,7 @@ journal = {ACM Trans. Embed. Comput. Syst.},
 month = jul,
 articleno = {144},
 numpages = {26},
-keywords = {Concurrency, Esterel, constructiveness, determinacy, determinism, embedded systems, reactive systems, synchronous languages}
+keywords = {synchronous languages, reactive systems, embedded systems, determinism, determinacy, constructiveness, Esterel, Concurrency}
 }
 
 @inproceedings{1715759.1715780,
@@ -738,7 +739,7 @@ abstract = {On microcontrollers, timer devices provide high-precision timing, bu
 booktitle = {Proceedings of the 21st ACM-IEEE International Conference on Formal Methods and Models for System Design},
 pages = {137–147},
 numpages = {11},
-keywords = {real time systems, concurrency control, computer languages, timing},
+keywords = {timing, computer languages, concurrency control, real time systems},
 location = {Hamburg, Germany},
 series = {MEMOCODE '23}
 }
@@ -756,7 +757,7 @@ abstract = {In the context of component-based embedded systems, the management o
 booktitle = {Proceedings of the Ninth ACM International Conference on Embedded Software},
 pages = {309–318},
 numpages = {10},
-keywords = {component-based systems, discrete controller synthesis, reconfigurable systems, synchronous programming},
+keywords = {synchronous programming, reconfigurable systems, discrete controller synthesis, component-based systems},
 location = {Taipei, Taiwan},
 series = {EMSOFT '11}
 }
@@ -774,7 +775,7 @@ abstract = {We describe the extension of a reactive programming language with a 
 booktitle = {Proceedings of the ACM SIGPLAN/SIGBED 2010 Conference on Languages, Compilers, and Tools for Embedded Systems},
 pages = {57–66},
 numpages = {10},
-keywords = {adaptive and reconfigurable systems, components, contracts, discrete controller synthesis, modularity, reactive systems, synchronous programming},
+keywords = {synchronous programming, reactive systems, modularity, discrete controller synthesis, contracts, components, adaptive and reconfigurable systems},
 location = {Stockholm, Sweden},
 series = {LCTES '10}
 }
@@ -789,7 +790,7 @@ abstract = {Antescofo is recently developed software for musical score following
 booktitle = {Proceedings of the Eleventh ACM International Conference on Embedded Software},
 articleno = {1},
 numpages = {12},
-keywords = {error handling and synchronization strategies, language embedding, mixed music, synchronous programming},
+keywords = {synchronous programming, mixed music, language embedding, error handling and synchronization strategies},
 location = {Montreal, Quebec, Canada},
 series = {EMSOFT '13}
 }
@@ -807,7 +808,7 @@ abstract = {Synchronous programming languages have proved to be advantageous for
 booktitle = {Proceedings of the 2001 International Conference on Compilers, Architecture, and Synthesis for Embedded Systems},
 pages = {49–58},
 numpages = {10},
-keywords = {code generation, reactive systems, synchronous languages},
+keywords = {synchronous languages, reactive systems, code generation},
 location = {Atlanta, Georgia, USA},
 series = {CASES '01}
 }
@@ -822,7 +823,7 @@ abstract = {Hybrid systems modeling languages are widely used in the development
 booktitle = {Proceedings of the 12th International Conference on Embedded Software},
 pages = {125–126},
 numpages = {2},
-keywords = {block diagrams, compilation, hybrid systems, real-time systems, semantics, synchronous languages, type systems},
+keywords = {type systems, synchronous languages, semantics, real-time systems, hybrid systems, compilation, block diagrams},
 location = {Amsterdam, The Netherlands},
 series = {EMSOFT '15}
 }
@@ -840,7 +841,7 @@ abstract = {Synchronous programs are well-suited for the implementation of real-
 booktitle = {Proceedings of the 2004 International Conference on Compilers, Architecture, and Synthesis for Embedded Systems},
 pages = {179–189},
 numpages = {11},
-keywords = {causality, fixpoints, synchronous languages, ternary logic},
+keywords = {ternary logic, synchronous languages, fixpoints, causality},
 location = {Washington DC, USA},
 series = {CASES '04}
 }
@@ -855,7 +856,7 @@ abstract = {Synchronous programs have been widely used in the design of safety c
 booktitle = {Proceedings of the 2013 International Conference on Compilers, Architectures and Synthesis for Embedded Systems},
 articleno = {20},
 numpages = {10},
-keywords = {integer linear programming, scability, static timing analysis, synchronous languages},
+keywords = {synchronous languages, static timing analysis, scability, integer linear programming},
 location = {Montreal, Quebec, Canada},
 series = {CASES '13}
 }
@@ -873,7 +874,7 @@ abstract = {We propose a simple programming language, called Nemo, specific to t
 booktitle = {Proceedings of the 2006 ACM Symposium on Applied Computing},
 pages = {901–905},
 numpages = {5},
-keywords = {discrete control synthesis, domain-specific language, real-time systems, safe design, synchronous programming},
+keywords = {synchronous programming, safe design, real-time systems, domain-specific language, discrete control synthesis},
 location = {Dijon, France},
 series = {SAC '06}
 }
@@ -891,7 +892,7 @@ abstract = {We propose a method for automatically generating abstract transforme
 booktitle = {Proceedings of the 36th Annual ACM SIGPLAN-SIGACT Symposium on Principles of Programming Languages},
 pages = {140–151},
 numpages = {12},
-keywords = {abstract interpretation, linear inequalities, program transformation, quantifier elimination},
+keywords = {quantifier elimination, program transformation, linear inequalities, abstract interpretation},
 location = {Savannah, GA, USA},
 series = {POPL '09}
 }
@@ -913,7 +914,7 @@ journal = {ACM Trans. Embed. Comput. Syst.},
 month = may,
 articleno = {29},
 numpages = {35},
-keywords = {Actors, behavioral types, causality, data flow, deadlock, discrete-event models, interfaces, synchronous languages, timed systems}
+keywords = {timed systems, synchronous languages, interfaces, discrete-event models, deadlock, data flow, causality, behavioral types, Actors}
 }
 
 @inproceedings{10.1145/2695664.2695819,
@@ -963,7 +964,7 @@ abstract = {Hybrid modelers such as Simulink have become corner stones of embedd
 booktitle = {Proceedings of the 2011 SIGPLAN/SIGBED Conference on Languages, Compilers and Tools for Embedded Systems},
 pages = {61–70},
 numpages = {10},
-keywords = {block diagrams, compilation, hybrid systems, real-time systems, semantics, synchronous languages, type systems},
+keywords = {type systems, synchronous languages, semantics, real-time systems, hybrid systems, compilation, block diagrams},
 location = {Chicago, IL, USA},
 series = {LCTES '11}
 }
@@ -985,7 +986,7 @@ journal = {ACM Trans. Embed. Comput. Syst.},
 month = nov,
 pages = {708–750},
 numpages = {43},
-keywords = {Synchronous languages, code generation, static analysis}
+keywords = {static analysis, code generation, Synchronous languages}
 }
 
 @inproceedings{10.1145/1480881.1480893,
@@ -1001,7 +1002,7 @@ abstract = {We study modular, automatic code generation from hierarchical block 
 booktitle = {Proceedings of the 36th Annual ACM SIGPLAN-SIGACT Symposium on Principles of Programming Languages},
 pages = {78–89},
 numpages = {12},
-keywords = {block diagrams, clustering, code generation, embedded software, np-complete, synchronous languages},
+keywords = {synchronous languages, np-complete, embedded software, code generation, clustering, block diagrams},
 location = {Savannah, GA, USA},
 series = {POPL '09}
 }
@@ -1039,3 +1040,4 @@ numpages = {4},
 location = {Yokohama, Japan},
 series = {ASP-DAC '01}
 }
+

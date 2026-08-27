@@ -73,7 +73,6 @@ After executing the Boolean search, results were limited to:
 
 - Computer science
 - Engineering
-- Science, humanities and social sciences, multidisciplinary
 - Mathematics
 
 These discipline filters are part of the executed search strategy but are not encoded in the Boolean query above.

@@ -1,5 +1,7 @@
 # Systematic literature review
 
+Extracted results from databases in Aug 27th, 2026
+
 This directory contains the database exports, preprocessing pipeline, audit
 outputs, and documentation for the systematic literature review.
 
