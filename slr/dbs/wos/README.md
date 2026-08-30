@@ -6,7 +6,7 @@ documented below.
 
 ## Files
 
-- `results-<date>.xls` or `results-<date>.csv`: raw Web of Science export; record count varies with each query export.
+- `results-<date>.xls`: raw Web of Science export; record count varies with each query export.
 - `normalize.py`: converts the workbook and maps its columns to the common four-field schema.
 - `results-<date>-normalized.csv`: normalized records used by the global deduplication stage.
 - `results-<date>-deduplicated.csv`: records remaining after global DOI/title deduplication.
