@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Convert a BibTeX export into a spreadsheet-friendly CSV file.
+"""Normalize an ACM BibTeX export into the shared CSV schema.
 
 The parser intentionally uses only the Python standard library so that ACM
 exports can be converted without installing a BibTeX package.
@@ -8,21 +8,35 @@ exports can be converted without installing a BibTeX package.
 from __future__ import annotations
 
 import argparse
-import csv
 import html
 import re
 import sys
 import unicodedata
 from pathlib import Path
 
+if __package__ in {None, ""}:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-CSV_COLUMNS = [
-    "document_type",
-    "title",
-    "doi",
-    "year",
-    "url",
-]
+from scripts.common import (
+    OUTPUT_COLUMNS,
+    PipelineError,
+    find_dated_input,
+    make_dedup_key,
+    normalize_content_type,
+    normalize_doi,
+    normalized_output_path,
+    write_csv,
+)
+
+DISPLAY_NAME = "ACM Digital Library"
+INPUT_SUFFIX = ".bib"
+INPUT_COLUMNS = {
+    "title": "title",
+    "doi": "doi",
+    "year": "year",
+    "url": "url",
+}
+ALLOWED_CONTENT_TYPES = ("Article", "Conference paper")
 
 
 class BibTeXError(ValueError):
@@ -129,7 +143,7 @@ def _parse_entry(entry_type: str, body: str) -> dict[str, str]:
         raise BibTeXError(f"{entry_type} entry has an empty citation key")
 
     fields: dict[str, str] = {"entry_type": entry_type.casefold()}
-    extracted_fields = {"title", "doi", "year", "url"}
+    extracted_fields = set(INPUT_COLUMNS.values())
     position = comma + 1
     while position < len(body):
         while position < len(body) and (body[position].isspace() or body[position] == ","):
@@ -235,16 +249,14 @@ def _document_type(entry_type: str) -> str:
 
 def entry_to_row(entry: dict[str, str]) -> dict[str, str]:
     entry_type = entry["entry_type"]
-    return {
-        "document_type": _document_type(entry_type),
-        "title": _field(entry, "title"),
-        "doi": _field(entry, "doi"),
-        "year": _field(entry, "year"),
-        "url": _field(entry, "url"),
-    }
+    row = {column: "" for column in OUTPUT_COLUMNS}
+    row["document_type"] = _document_type(entry_type)
+    for output_column, input_column in INPUT_COLUMNS.items():
+        row[output_column] = _field(entry, input_column)
+    return row
 
 
-def convert(input_path: Path, output_path: Path) -> int:
+def normalize(input_path: Path, output_path: Path) -> int:
     try:
         text = input_path.read_text(encoding="utf-8-sig")
     except FileNotFoundError as exc:
@@ -253,26 +265,33 @@ def convert(input_path: Path, output_path: Path) -> int:
         raise BibTeXError(f"Input is not valid UTF-8: {input_path}: {exc}") from exc
 
     entries = parse_bibtex(text)
-    rows = [entry_to_row(entry) for entry in entries]
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    with output_path.open("w", encoding="utf-8-sig", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=CSV_COLUMNS, lineterminator="\n")
-        writer.writeheader()
-        writer.writerows(rows)
+    allowed = {normalize_content_type(value) for value in ALLOWED_CONTENT_TYPES}
+    rows = []
+    for entry in entries:
+        row = entry_to_row(entry)
+        row["doi"] = normalize_doi(row["doi"])
+        if normalize_content_type(row["document_type"]) not in allowed:
+            continue
+        if make_dedup_key(row["title"], row["doi"]) is None:
+            continue
+        rows.append(row)
+    write_csv(output_path, OUTPUT_COLUMNS, rows)
     return len(rows)
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Convert a BibTeX file to CSV.")
-    parser.add_argument("input", type=Path, help="BibTeX input file")
-    parser.add_argument("output", type=Path, help="CSV output file")
+    parser = argparse.ArgumentParser(description="Normalize an ACM BibTeX export.")
+    parser.add_argument("input", type=Path, nargs="?", help="BibTeX input file")
+    parser.add_argument("output", type=Path, nargs="?", help="CSV output file")
     args = parser.parse_args()
     try:
-        count = convert(args.input, args.output)
-    except BibTeXError as exc:
-        print(f"2csv.py: error: {exc}", file=sys.stderr)
+        input_path = args.input or find_dated_input(Path(__file__).parent, INPUT_SUFFIX)
+        output_path = args.output or normalized_output_path(input_path)
+        count = normalize(input_path, output_path)
+    except (BibTeXError, PipelineError) as exc:
+        print(f"normalize.py: error: {exc}", file=sys.stderr)
         return 2
-    print(f"Wrote {count} records to {args.output.resolve()}")
+    print(f"Wrote {count} records to {output_path.resolve()}")
     return 0
 
 

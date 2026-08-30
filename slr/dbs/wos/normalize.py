@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Extract the selected Web of Science columns into a CSV."""
+"""Normalize a Web of Science Excel export into the shared CSV schema."""
 
 from __future__ import annotations
 
@@ -12,21 +12,31 @@ import tempfile
 from collections.abc import Mapping
 from pathlib import Path
 
+if __package__ in {None, ""}:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-CSV_COLUMNS = [
-    "document_type",
-    "title",
-    "doi",
-    "year",
-    "url",
-]
+from scripts.common import (
+    OUTPUT_COLUMNS,
+    PipelineError,
+    find_dated_input,
+    make_dedup_key,
+    normalize_content_type,
+    normalize_doi,
+    normalized_output_path,
+    read_table,
+    write_csv,
+)
+
+
+DISPLAY_NAME = "Web of Science"
+INPUT_SUFFIX = (".xls", ".xlsx", ".csv")
 
 
 class ExcelError(ValueError):
     """Raised when an Excel input cannot be converted safely."""
 
 
-_FIELD_ALIASES = {
+INPUT_COLUMNS = {
     "document_type": (
         "Document Type",
         "Document Identifier",
@@ -38,6 +48,13 @@ _FIELD_ALIASES = {
     "year": ("Publication Year", "Year", "year"),
     "url": ("Web of Science Record", "URL", "Link", "PDF Link", "url"),
 }
+ALLOWED_CONTENT_TYPES = (
+    "Article",
+    "Proceedings Paper",
+    "Article; Proceedings Paper",
+    "Book",
+    "Book Chapter",
+)
 
 
 def _libreoffice_executable() -> str:
@@ -61,9 +78,11 @@ def _field(row: Mapping[str | None, str | list[str] | None], *names: str) -> str
 
 
 def _row_to_csv(row: Mapping[str | None, str | list[str] | None]) -> dict[str, str]:
-    return {
-        column: _field(row, *_FIELD_ALIASES[column]) for column in CSV_COLUMNS
+    normalized = {
+        column: _field(row, *INPUT_COLUMNS[column]) for column in OUTPUT_COLUMNS
     }
+    normalized["document_type"] = _field(row, *INPUT_COLUMNS["document_type"])
+    return normalized
 
 
 def _read_converted_csv(path: Path) -> list[dict[str, str]]:
@@ -117,31 +136,45 @@ def _read_excel(input_path: Path) -> list[dict[str, str]]:
         return _read_converted_csv(converted)
 
 
-def convert(input_path: Path, output_path: Path) -> int:
-    """Convert .xls/.xlsx input and write only the configured CSV columns."""
-    if input_path.suffix.casefold() not in {".xls", ".xlsx"}:
+def _read_input(input_path: Path) -> list[dict[str, str]]:
+    if input_path.suffix.casefold() == ".csv":
+        return [_row_to_csv(row) for row in read_table(input_path).rows]
+    return _read_excel(input_path)
+
+
+def normalize(input_path: Path, output_path: Path) -> int:
+    """Normalize .xls/.xlsx input and write the shared CSV columns."""
+    if input_path.suffix.casefold() not in {".xls", ".xlsx", ".csv"}:
         raise ExcelError(f"Unsupported input format: {input_path.suffix or '<none>'}")
 
-    rows = _read_excel(input_path)
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    with output_path.open("w", encoding="utf-8-sig", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=CSV_COLUMNS, lineterminator="\n")
-        writer.writeheader()
-        writer.writerows(rows)
+    allowed = {normalize_content_type(value) for value in ALLOWED_CONTENT_TYPES}
+    rows = []
+    for row in _read_input(input_path):
+        row["doi"] = normalize_doi(row["doi"])
+        if normalize_content_type(row["document_type"]) not in allowed:
+            continue
+        if make_dedup_key(row["title"], row["doi"]) is None:
+            continue
+        rows.append(row)
+    write_csv(output_path, OUTPUT_COLUMNS, rows)
     return len(rows)
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Convert an Excel export to CSV.")
-    parser.add_argument("input", type=Path, help="Excel input (.xls or .xlsx)")
-    parser.add_argument("output", type=Path, help="CSV output")
+    parser = argparse.ArgumentParser(description="Normalize a Web of Science export.")
+    parser.add_argument(
+        "input", type=Path, nargs="?", help="Excel or CSV input (.xls, .xlsx, or .csv)"
+    )
+    parser.add_argument("output", type=Path, nargs="?", help="CSV output")
     args = parser.parse_args()
     try:
-        count = convert(args.input, args.output)
-    except ExcelError as exc:
-        print(f"2csv.py: error: {exc}", file=sys.stderr)
+        input_path = args.input or find_dated_input(Path(__file__).parent, INPUT_SUFFIX)
+        output_path = args.output or normalized_output_path(input_path)
+        count = normalize(input_path, output_path)
+    except (ExcelError, PipelineError) as exc:
+        print(f"normalize.py: error: {exc}", file=sys.stderr)
         return 2
-    print(f"Wrote {count} records to {args.output.resolve()}")
+    print(f"Wrote {count} records to {output_path.resolve()}")
     return 0
 
 

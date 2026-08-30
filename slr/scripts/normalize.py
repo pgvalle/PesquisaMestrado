@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+from importlib import import_module
 import sys
 from collections.abc import Iterable
 from pathlib import Path
@@ -11,12 +12,12 @@ from pathlib import Path
 if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from scripts.bib_to_csv import convert as convert_acm
-from scripts.normalize_common import SPECS, normalize_database
-from scripts.pipeline_lib import PipelineError
-
-
-DATABASE_ORDER = ("scopus", "wos", "ieee", "springer", "acm")
+from scripts.common import (
+    DATABASE_ORDER,
+    PipelineError,
+    find_dated_input,
+    normalized_output_path,
+)
 
 
 def normalize_all(
@@ -28,14 +29,14 @@ def normalize_all(
 
     for database in databases:
         database_dir = dbs_dir / database
-        if database == "acm":
-            convert_acm(
-                database_dir / "results.bib", database_dir / SPECS[database].input_filename
-            )
-        output_path, count = normalize_database(database, database_dir)
+        normalizer = import_module(f"dbs.{database}.normalize")
+        raw_path = find_dated_input(database_dir, normalizer.INPUT_SUFFIX)
+        output_path = normalized_output_path(raw_path)
+        count = normalizer.normalize(raw_path, output_path)
         summary.append(
             {
                 "database": database,
+                "input_file": str(raw_path),
                 "records_written": count,
                 "normalized_file": str(output_path),
             }
