@@ -1,6 +1,6 @@
 # Systematic literature review
 
-Extracted results from databases in Aug 27th, 2026
+Extracted results from databases in Aug 30th, 2026
 
 This directory contains the database exports, preprocessing pipeline, audit
 outputs, and documentation for the systematic literature review.
@@ -70,6 +70,7 @@ The current pipeline uses DOI precedence:
 - Records with the same DOI are duplicates even if their titles differ.
 - Records with different DOIs are not duplicates even if their titles match.
 - Records without a DOI use normalized document title as a fallback.
+- Records without both a DOI and a usable document title are rejected during normalization.
 
 ## Pipeline
 
@@ -80,14 +81,16 @@ root:
 python slr/scripts/run.py
 ```
 
-The central normalizer applies each database's configured content-type
-allowlist while writing `normalized.csv`. The raw exports remain unchanged.
+Each database-local normalizer applies its configured input mapping and
+content-type allowlist while writing a dated `results-<date>-normalized.csv`.
+The raw exports remain unchanged.
 To run normalization without deduplication, use
 `python slr/scripts/normalize.py`; database-specific commands are documented in
 the corresponding database READMEs.
 
-The pipeline keeps outputs separated by database and writes run-specific counts
-and input hashes to `slr/dbs/run_manifest.json`. Counts are deliberately
+The pipeline keeps outputs separated by database and date, and writes
+run-specific counts and input hashes to `slr/dbs/results-<date>-manifest.json`.
+Counts are deliberately
 generated at runtime rather than treated as constants in documentation.
 
 The implementation and test details are documented in

@@ -6,10 +6,10 @@ documented below.
 
 ## Files
 
-- `results.csv`: raw IEEE Xplore export; record count varies with each query export.
+- `results-<date>.csv`: raw IEEE Xplore export; record count varies with each query export.
 - `../../scripts/normalize.py`: converts the raw export to the common SLR schema.
-- `normalized.csv`: normalized records used by the global deduplication stage.
-- `deduplicated.csv`: records remaining after global DOI/title deduplication.
+- `results-<date>-normalized.csv`: normalized records used by the global deduplication stage.
+- `results-<date>-deduplicated.csv`: records remaining after global DOI/title deduplication.
 
 ## Normalize
 
@@ -21,15 +21,17 @@ python slr/scripts/normalize.py ieee
 
 The raw export is not modified. The normalizer expects these IEEE columns:
 
-| Common field | IEEE Xplore column |
+| Normalized output | IEEE Xplore column |
 |---|---|
 | Title | `Document Title` |
 | Year | `Publication Year` |
 | DOI | `DOI` |
-| Document type | `Document Identifier` |
 | URL | `PDF Link` |
 
-It also adds `database` and `source_row`. DOI values are reduced to a bare DOI when
+`Document Identifier` is used only for filtering and is not written to the
+normalized file.
+
+DOI values are reduced to a bare DOI when
 the export contains a DOI URL. Normalization keeps only `IEEE Journals`, `IEEE
 Conferences`, `IEEE Books`, and `IEEE Early Access Articles`. Matching-only
 normalized values are not written.

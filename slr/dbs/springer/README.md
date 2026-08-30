@@ -7,11 +7,11 @@ below.
 
 ## Files
 
-- `results.csv`: canonical raw Springer export; record count varies with each query export.
-- `results.csv.bak`: retained pre-cleanup export from before the canonical title cleanup.
+- `results-<date>.csv`: canonical raw Springer export; record count varies with each query export.
+- `results-<date>.csv.bak`: retained pre-cleanup export from before the canonical title cleanup.
 - `../../scripts/normalize.py`: converts the raw export to the common SLR schema.
-- `normalized.csv`: normalized records used by the global deduplication stage.
-- `deduplicated.csv`: records remaining after global DOI/title deduplication.
+- `results-<date>-normalized.csv`: normalized records used by the global deduplication stage.
+- `results-<date>-deduplicated.csv`: records remaining after global DOI/title deduplication.
 
 ## Normalize
 
@@ -23,15 +23,17 @@ python slr/scripts/normalize.py springer
 
 The raw export is not modified. The normalizer expects these Springer columns:
 
-| Common field | Springer column |
+| Normalized output | Springer column |
 |---|---|
 | Title | `Item Title` |
 | Year | `Publication Year` |
 | DOI | `Item DOI` |
-| Document type | `Content Type` |
 | URL | `URL` |
 
-It also adds `database` and `source_row`. DOI values are reduced to a bare DOI when
+`Content Type` is used only for filtering and is not written to the normalized
+file.
+
+DOI values are reduced to a bare DOI when
 the export contains a DOI URL. Normalization keeps only `Article`, `Conference
 paper`, `Chapter`, and `Book` records. Matching-only normalized values are not
 written.

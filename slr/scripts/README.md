@@ -1,9 +1,8 @@
 # SLR processing scripts
 
-The central normalizer applies database-specific content-type filtering, and
-the global deduplicator operates on its normalized outputs. Raw database
-exports are never modified and no temporary raw-column pipeline outputs are
-created.
+Each database normalizer applies its own input mapping and content-type filter,
+and the global deduplicator operates on the normalized outputs. Raw database
+exports are never modified.
 
 ## Workflow
 
@@ -13,13 +12,13 @@ Run the complete workflow from the repository root:
 python slr/scripts/run.py
 ```
 
-This normalizes every database, writes each database's `normalized.csv`, then
+This normalizes every database, writes each database's dated normalized CSV, then
 runs global deduplication. The workflow writes:
 
-- `slr/dbs/<database>/normalized.csv`: normalized records that passed the database allowlist.
-- `slr/dbs/<database>/deduplicated.csv`: records remaining after global deduplication.
-- `slr/dbs/duplicates.csv`: duplicate-group audit.
-- `slr/dbs/run_manifest.json`: input hashes, normalization counts, deduplication counts, and rules for the run.
+- `slr/dbs/<database>/results-<date>-normalized.csv`: normalized records that passed the database allowlist.
+- `slr/dbs/<database>/results-<date>-deduplicated.csv`: records remaining after global deduplication.
+- `slr/dbs/results-<date>-duplicates.csv`: duplicate-group audit.
+- `slr/dbs/results-<date>-manifest.json`: input hashes, normalization counts, deduplication counts, and rules for the run.
 
 To run individual stages:
 
@@ -33,26 +32,28 @@ Pass one or more database names to normalize only those sources, for example
 
 ## Normalization
 
-The normalizer reads each database's raw `results.csv` or `results.xls`, applies
-its database-specific content-type allowlist, and writes the common normalized
-schema:
+Each `slr/dbs/<database>/normalize.py` reads that database's dated raw export,
+applies its local input mapping and content-type allowlist, and writes the
+shared normalized schema:
 
 ```text
-database, source_row, title, year, doi, document_type, url
+title, doi, year, url
 ```
 
-The original title is preserved. Matching-only normalized values are not
-written. DOI URLs are reduced to bare, case-folded DOIs.
+The shared columns and database order are defined in `scripts/common.py`. The original title is
+preserved. Matching-only normalized values are not written. DOI URLs are
+reduced to bare, case-folded DOIs. Document type is used only for each database's
+local allowlist and is not emitted.
 
-The allowlists are defined in `scripts/normalize_common.py`:
+Database-specific mappings and allowlists are defined in each local normalizer:
 
-| Database | Retained content types |
-|---|---|
-| Scopus | Article, Conference paper, Book chapter, Book |
-| Web of Science | Article, Proceedings Paper, Article; Proceedings Paper, Book, Book Chapter |
-| IEEE Xplore | IEEE Journals, IEEE Conferences, IEEE Books, IEEE Early Access Articles |
-| Springer | Article, Conference paper, Chapter, Book |
-| ACM Digital Library | Article, Conference paper |
+| Database | Normalizer | Retained content types |
+|---|---|---|
+| Scopus | `dbs/scopus/normalize.py` | Article, Conference paper, Book chapter, Book |
+| Web of Science | `dbs/wos/normalize.py` | Article, Proceedings Paper, Article; Proceedings Paper, Book, Book Chapter |
+| IEEE Xplore | `dbs/ieee/normalize.py` | IEEE Journals, IEEE Conferences, IEEE Books, IEEE Early Access Articles |
+| Springer | `dbs/springer/normalize.py` | Article, Conference paper, Chapter, Book |
+| ACM Digital Library | `dbs/acm/normalize.py` | Article, Conference paper |
 
 ## Deduplication
 
@@ -62,14 +63,15 @@ Deduplication uses DOI precedence:
 - Same DOI with different titles is a duplicate.
 - Same title with different DOIs is not a duplicate.
 - Records without a DOI use normalized title as a fallback.
+- Records without both a DOI and a usable title are rejected during normalization.
 
 Title fallback normalization decodes HTML entities, removes markup, applies
 Unicode NFKC and case-folding, replaces punctuation and other non-alphanumeric
 characters with spaces, and collapses whitespace. The original title is never
 rewritten.
 
-When a duplicate group occurs, the first record according to this priority is
-kept:
+When a duplicate group occurs, the first record according to `DATABASE_ORDER` in
+`scripts/common.py` is kept:
 
 ```text
 Scopus -> Web of Science -> IEEE Xplore -> Springer -> ACM
@@ -102,4 +104,5 @@ The tests cover:
 - Content-type normalization and allowlist filtering.
 - DOI precedence and title fallback.
 - Duplicate handling with same DOI/different title and same title/different DOI.
-- ACM BibTeX conversion.
+- ACM BibTeX normalization.
+- Database-local input-column mappings and normalized output columns.

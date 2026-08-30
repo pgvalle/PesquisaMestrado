@@ -2,7 +2,10 @@ projeto-dissertacao.pdf
 
 # LibreOffice lock files
 .~lock.*#
+__pycache__/
 
 # Generated SLR database outputs
-slr/dbs/*/normalized.csv
-slr/dbs/*/deduplicated.csv
+slr/dbs/*/results-*-normalized.csv
+slr/dbs/*/results-*-deduplicated.csv
+slr/dbs/results-*-duplicates.csv
+slr/dbs/results-*-manifest.json
