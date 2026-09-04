@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import io
 import shutil
 import subprocess
 import sys
@@ -87,13 +88,24 @@ def _row_to_csv(row: Mapping[str | None, str | list[str] | None]) -> dict[str, s
 
 def _read_converted_csv(path: Path) -> list[dict[str, str]]:
     try:
-        handle = path.open("r", encoding="utf-8-sig", newline="")
+        contents = path.read_bytes()
     except FileNotFoundError as exc:
         raise ExcelError(f"LibreOffice did not create a CSV for {path}") from exc
-    except UnicodeDecodeError as exc:
-        raise ExcelError(f"Converted CSV is not valid UTF-8: {path}: {exc}") from exc
 
-    with handle:
+    # LibreOffice normally writes UTF-8, but it may preserve the workbook's
+    # legacy Windows encoding (notably for old .xls exports).  Web of Science
+    # data commonly contains accented characters that expose this difference.
+    try:
+        text = contents.decode("utf-8-sig")
+    except UnicodeDecodeError:
+        try:
+            text = contents.decode("cp1252")
+        except UnicodeDecodeError as exc:
+            raise ExcelError(
+                f"Converted CSV is neither valid UTF-8 nor Windows-1252: {path}: {exc}"
+            ) from exc
+
+    with io.StringIO(text, newline="") as handle:
         reader = csv.DictReader(handle)
         if not reader.fieldnames:
             raise ExcelError(f"Converted CSV has no header: {path}")
