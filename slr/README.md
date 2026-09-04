@@ -28,6 +28,7 @@ selection also considers:
   Arduino, ESP32, or Raspberry Pi.
 - Documentation quality.
 - Suitability for the case studies defined in the research project.
+- Feasibility of integration with C/C++ and platform frameworks (Arduino, espressif)
 
 For each selected study, the review extracts:
 
