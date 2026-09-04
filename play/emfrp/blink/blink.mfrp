@@ -1,0 +1,11 @@
+module Blink 
+in
+  tick(False) : Bool
+out
+  led
+use
+  Std
+
+# Toggle the LED whenever the platform supplies a timer tick.
+node init[False] led : Bool =
+  if tick then !led@last else led@last

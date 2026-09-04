@@ -1,21 +1,17 @@
-JUNIPER ?= juniper
+EMFRP ?= emfrp
 
-SOURCE := blink.jun
-INO := blink.ino
+SOURCE := blink.mfrp
 PORT ?= /dev/ttyUSB0
 
 .PHONY: all build upload clean
 
 all: build
 
-$(INO): $(SOURCE)
-	$(JUNIPER) --source $< --output $@
+gen: $(SOURCE)
+	$(EMFRP) --cpp --nomain $<
 
-build: $(INO)
+build:
 	arduino-cli compile --fqbn esp32:esp32:esp32 .
 
-upload: $(INO)
+upload: build
 	arduino-cli upload --fqbn esp32:esp32:esp32 --port $(PORT) .
-
-clean:
-	$(RM) $(INO)

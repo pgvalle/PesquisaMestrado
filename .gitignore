@@ -3,6 +3,7 @@ projeto-dissertacao.pdf
 # LibreOffice lock files
 .~lock.*#
 __pycache__/
+.pio/
 
 # Generated SLR database outputs
 slr/dbs/*/results-*-normalized.csv
