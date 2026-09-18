@@ -50,6 +50,9 @@ identifier. Matching-only normalized values are not written to normalized CSV fi
 # Meaning in filtered results (abstract criteria)
 
 * 0: couldn't look
-* 1: nothing to do with scope
-* 2: likely relevant
-* 3: unsure
+* 1: likely relevant
+* 2: unsure
+* 3: nothing to do with scope
+
+Classifications are recorded in the `status` column of `*-filtered.csv` files.
+If a database has no `*-filtered.csv` file, its article review has not started.
