@@ -46,3 +46,10 @@ Title normalization used for the no-DOI fallback decodes HTML entities, removes
 markup, applies Unicode NFKC and case folding, changes punctuation to spaces, and
 collapses whitespace. DOI normalization removes DOI URL wrappers and case-folds the
 identifier. Matching-only normalized values are not written to normalized CSV files.
+
+# Meaning in filtered results (abstract criteria)
+
+* 0: couldn't look
+* 1: nothing to do with scope
+* 2: likely relevant
+* 3: unsure
