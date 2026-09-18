@@ -18,6 +18,10 @@ filters, export format, normalization mapping, historical inventory, and
 source-specific preprocessing notes. They are the authoritative location for
 database-level information.
 
+## Tip
+
+Copy-paste the DOI in the [official website](https://dx.doi.org) redirects to the exact publication address
+
 ## Scope
 
 The review considers studies that present, use, or evaluate a reactive
